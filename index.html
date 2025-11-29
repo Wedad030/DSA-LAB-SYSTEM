@@ -1,1334 +1,637 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>DSA CONNECT – Dental Lab Tracking System</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta charset="UTF-8" />
+  <title>DSA Lab System – Clinic Entry</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* 🎨 هوية الألوان */
-    :root {
-      --green-light: #A9D5B3;
-      --green: #3CB371;
-      --green-dark: #1B4630;
-
-      --blue-light: #4FA3FF;
-      --blue-dark: #2C5282;
-
-      --purple-light: #8B68FF;
-      --purple: #5A3CC9;
-
-      --gold: #F0A73E;
-      --gold-dark: #E68A21;
-
-      --text: #222222;
-      --gray: #DDDDDD;
-      --white: #FFFFFF;
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
     body {
       margin: 0;
-      background: #f4f6f7;
-      color: var(--text);
-      direction: rtl;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #e9f9f3, #ffffff);
+      color: #1e272e;
     }
-
-    h1, h2, h3 {
-      margin-top: 0;
-    }
-
-    /* شاشة الدخول */
-    #loginPage {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, var(--green-light), var(--blue-light));
-      padding: 16px;
-    }
-
-    .login-box {
-      background: var(--white);
-      padding: 24px;
-      border-radius: 16px;
-      max-width: 380px;
-      width: 100%;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-      text-align: center;
-    }
-
-    .login-box h1 {
-      font-size: 1.4rem;
-      margin-bottom: 6px;
-    }
-
-    .login-sub {
-      font-size: 0.9rem;
-      color: #555;
-      margin-bottom: 18px;
-    }
-
-    .login-input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      text-align: center;
-      font-size: 1rem;
-    }
-
-    .login-btn {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      background: var(--green);
-      color: var(--white);
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    .login-btn:hover {
-      background: var(--green-dark);
-    }
-
-    /* إطار التطبيق */
-    #app {
-      display: none;
-      min-height: 100vh;
-    }
-
-    header {
-      background: var(--green-dark);
-      color: var(--white);
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .app-title {
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .app-subtitle {
-      font-size: 0.8rem;
-      opacity: 0.85;
-    }
-
-    .user-label {
-      font-size: 0.8rem;
-      opacity: 0.9;
-    }
-
-    /* زر الإعدادات الصغير (برقم سري) */
-    #settingsBtn {
-      position: fixed;
-      left: 15px;
-      top: 64px;
-      background: var(--green-light);
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 22px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      z-index: 50;
-    }
-
-    /* نافذة إدخال PIN للإعدادات */
-    #settingsModal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 60;
-    }
-
-    .modal-box {
-      background: var(--white);
-      padding: 20px;
-      border-radius: 14px;
-      width: 280px;
-      text-align: center;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-    }
-
-    /* لوحة إعدادات بسيطة */
-    #settingsPanel {
-      position: fixed;
-      left: -260px;
-      top: 0;
-      width: 260px;
-      height: 100%;
-      background: var(--white);
-      box-shadow: 4px 0 12px rgba(0,0,0,0.2);
-      padding: 16px;
-      transition: 0.3s;
-      z-index: 55;
-      overflow-y: auto;
-    }
-
-    #settingsPanel h3 {
-      margin-top: 0;
-    }
-
-    /* المحتوى الرئيسي */
-    main {
-      padding: 16px;
-      padding-bottom: 80px;
-    }
-
-    .page {
-      display: none;
-    }
-
-    /* بطاقات لوحة التحكم */
-    .dashboard {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .dash-card {
-      background: var(--white);
-      border-radius: 14px;
-      padding: 16px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-      cursor: pointer;
-      transition: 0.25s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border: 1px solid #e8e8e8;
-    }
-
-    .dash-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.14);
-      background: #f6faf7;
-    }
-
-    .dash-icon {
-      font-size: 30px;
-      margin-bottom: 10px;
-    }
-
-    .dash-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #1c3b34;
-    }
-
-    .dash-sub {
-      font-size: 0.85rem;
-      color: #6c857f;
-      margin-top: 4px;
-    }
-
-    /* نماذج */
-    .form-box {
-      background: var(--white);
-      padding: 18px;
-      border-radius: 14px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-      max-width: 650px;
+    .app {
+      max-width: 1100px;
       margin: 0 auto;
-      border: 1px solid #e8e8e8;
+      padding: 24px 16px 40px;
     }
-
-    .input-row {
-      margin-bottom: 10px;
+    h1, h2, h3 {
+      margin: 0 0 12px;
     }
-
-    .input-row label {
-      font-weight: 600;
-      margin-bottom: 4px;
-      display: block;
-      font-size: 0.9rem;
+    .logo {
+      font-weight: 700;
+      font-size: 20px;
+      color: #0f9d58;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-
-    .input-row input,
-    .input-row select,
-    .input-row textarea {
-      width: 100%;
-      padding: 10px;
+    .logo span.icon {
+      width: 28px;
+      height: 28px;
       border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 0.95rem;
+      background: #0f9d58;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
     }
-
-    .input-row textarea {
+    .card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 20px 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+      margin-top: 16px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .hidden {
+      display: none;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    input, select, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #0f9d58;
+      box-shadow: 0 0 0 1px rgba(15,157,88,0.15);
+    }
+    textarea {
+      min-height: 60px;
       resize: vertical;
     }
-
-    .submit-btn,
-    .assist-btn {
-      background: var(--green);
-      color: var(--white);
-      padding: 12px 18px;
+    .btn {
       border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      width: 100%;
-      margin-top: 10px;
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 14px;
     }
-
-    .submit-btn:hover,
-    .assist-btn:hover {
-      background: var(--green-dark);
+    .btn-primary {
+      background: #0f9d58;
+      color: #ffffff;
     }
-
-    /* صناديق معلومات */
-    .case-info,
-    .assist-info {
-      background: #f6faf7;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #dce8e1;
-      margin-bottom: 12px;
-      font-size: 0.9rem;
+    .btn-outline {
+      background: transparent;
+      color: #0f9d58;
+      border: 1px solid rgba(15,157,88,0.3);
     }
-
-    .sign-input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+    .btn-primary:hover {
+      background: #0c7c45;
     }
-
-    /* إحصائيات */
-    .stats-container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 10px 0;
+    .btn-outline:hover {
+      background: rgba(15,157,88,0.06);
     }
-
-    .stat-card {
-      background: white;
-      padding: 16px;
-      border-radius: 14px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.07);
-      border: 1px solid #e8e8e8;
-      margin-bottom: 12px;
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #ecfdf3;
+      color: #166534;
+      font-size: 12px;
     }
-
-    .stat-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-      color: #1c3b34;
-    }
-
-    .stat-number {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #197a57;
-    }
-
-    .bar {
-      width: 100%;
-      height: 10px;
-      background: #e8e8e8;
-      border-radius: 6px;
-      overflow: hidden;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
       margin-top: 8px;
     }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 6px;
-      transition: 0.4s ease;
-    }
-
-    /* الحالات المرفوضة */
-    .reject-box {
-      background: white;
-      padding: 18px;
-      border-radius: 16px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-      max-width: 650px;
-      margin: 0 auto;
-      border: 1px solid #e8e8e8;
-    }
-
-    .reject-item {
-      background: #fff4f4;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ffcccc;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
-    }
-
-    /* صفحة الفني البسيطة */
-    .tech-cards {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .tcard {
-      padding: 14px;
-      border-radius: 14px;
-      color: white;
-      font-weight: bold;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
-      text-align: center;
-      font-size: 0.95rem;
-    }
-
-    .tcard.green { background: var(--green); }
-    .tcard.blue { background: var(--blue-light); }
-    .tcard.purple { background: var(--purple-light); }
-    .tcard.orange { background: var(--gold); }
-
-    .tech-case-card {
-      padding: 12px;
-      background: var(--white);
+    .shortcut-card {
+      background: #f1f5f9;
       border-radius: 12px;
-      margin-bottom: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-      border-right: 6px solid var(--green-light);
-      font-size: 0.9rem;
-    }
-
-    /* تفاصيل الفني + تبويبات تحت */
-    #techTabs {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: var(--white);
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      border-top: 2px solid var(--gray);
-      padding: 4px 0;
-      box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
-    }
-
-    .tab-btn {
-      text-align: center;
-      font-size: 0.7rem;
-      padding: 4px;
-      color: var(--text);
+      padding: 10px 12px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       cursor: pointer;
+      border: 1px solid transparent;
+      transition: 0.2s;
     }
-
-    .tab-btn:hover {
-      background: var(--green-light);
-      color: var(--green-dark);
+    .shortcut-card .left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-
-    .tab-section {
-      display: none;
-      padding: 12px;
-      margin-bottom: 76px;
-      animation: fade 0.3s;
-      font-size: 0.9rem;
+    .shortcut-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #e0f2f1;
     }
-
-    .active-tab {
-      display: block !important;
+    .shortcut-card:hover {
+      background: #e2f3ec;
+      border-color: #0f9d58;
     }
-
-    @keyframes fade {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .tagline {
+      font-size: 14px;
+      margin-top: 6px;
+      color: #4b5563;
     }
-
-    footer {
-      text-align: center;
-      font-size: 0.75rem;
-      color: #777;
-      padding: 10px;
+    .tagline small {
+      display: block;
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .timeline {
       margin-top: 10px;
+      border-top: 1px dashed #e5e7eb;
+      padding-top: 10px;
     }
-
+    .timeline-item {
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+    .timeline-item span {
+      color: #6b7280;
+    }
+    .muted {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 6px;
+    }
+    .error {
+      color: #b91c1c;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    .success {
+      color: #15803d;
+      font-size: 12px;
+      margin-top: 6px;
+    }
     @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-      }
-      .tech-cards {
-        grid-template-columns: 1fr 1fr;
-      }
+      .app { padding: 16px 10px 28px; }
     }
   </style>
 </head>
 <body>
-
-<!-- شاشة الدخول -->
-<div id="loginPage">
-  <div class="login-box">
-    <h1>DSA CONNECT</h1>
-    <div class="login-sub">Dental Lab Tracking – تتبّع ذكي لحالات المعمل</div>
-    <p>✨ أهلاً، جاهزة نرتب يومك ونمسك كل الحالات بدون ما تضيع؟</p>
-    <input id="loginUser" class="login-input" type="text" placeholder="اسم المستخدم / Username">
-    <input id="loginPin" class="login-input" type="password" placeholder="الرقم السري / PIN">
-    <button class="login-btn" onclick="login()">دخول / Login</button>
-  </div>
-</div>
-
-<!-- التطبيق -->
-<div id="app">
-  <header>
-    <div>
-      <div class="app-title">DSA CONNECT – Dental Lab System</div>
-      <div class="app-subtitle">من العيادة إلى المعمل… تدفّق واحد واضح 💚</div>
-    </div>
-    <div class="user-label" id="userLabel"></div>
-  </header>
-
-  <!-- زر إعدادات برقم سري صغير -->
-  <div id="settingsBtn" onclick="openSettingsPIN()">⚙️</div>
-
-  <!-- نافذة إدخال PIN للإعدادات -->
-  <div id="settingsModal">
-    <div class="modal-box">
-      <h3>🔐 إعدادات المدير</h3>
-      <p>أدخلي الرقم السري لفتح الإعدادات</p>
-      <input id="settingsPIN" class="login-input" type="password" placeholder="Manager PIN">
-      <button class="login-btn" onclick="checkSettingsPIN()">دخول</button>
-    </div>
-  </div>
-
-  <!-- لوحة إعدادات بسيطة -->
-  <div id="settingsPanel">
-    <h3>⚙️ إعدادات DSA CONNECT</h3>
-    <p>مرحباً وداد 🤍<br>هنا منطقة التحكم الخاصة فيك.</p>
-    <hr>
-    <h4>🔑 تغيير رقم PIN للإعدادات (حالياً: 9999)</h4>
-    <input id="newManagerPIN" class="login-input" type="password" placeholder="PIN جديد">
-    <button class="login-btn" onclick="changeManagerPIN()">حفظ PIN جديد</button>
-    <hr>
-    <h4>💾 نسخ احتياطي (Download JSON)</h4>
-    <button class="login-btn" onclick="backupData()">تنزيل بيانات الحالات</button>
-    <p style="font-size:0.8rem;color:#666;">* هذه نسخة تجريبية محلية – تحتاج Back-End حقيقي في المرحلة القادمة.</p>
-  </div>
-
-  <main>
-    <!-- لوحة التحكم -->
-    <div id="dashboard" class="page">
-      <h2>لوحة التحكم / Dashboard</h2>
-      <p>✨ "كل حالة واضحة، وكل خطوة محسوبة" – يلا نشتغل بهدوء وقوة.</p>
-
-      <div class="dashboard">
-        <div class="dash-card" onclick="openPage('clinicEntry')">
-          <div class="dash-icon">📝</div>
-          <div class="dash-title">تسجيل حالة جديدة</div>
-          <div class="dash-sub">New Case Entry – من العيادة للمعمل</div>
-        </div>
-
-        <div class="dash-card" onclick="openPage('labReceive')">
-          <div class="dash-icon">🏭</div>
-          <div class="dash-title">استلام من المعمل</div>
-          <div class="dash-sub">Lab Receiving – تسجيل وصول + وقت الاستلام</div>
-        </div>
-
-        <div class="dash-card" onclick="openPage('techToDept')">
-          <div class="dash-icon">👨🏻‍🔧</div>
-          <div class="dash-title">تحويل الفني → الأقسام</div>
-          <div class="dash-sub">RDC1 / RDC2 / Box / Clinic</div>
-        </div>
-
-        <div class="dash-card" onclick="openPage('assistantReceive')">
-          <div class="dash-icon">📦</div>
-          <div class="dash-title">استلام المساعدة</div>
-          <div class="dash-sub">Scan + توقيع + عبارة تحفيزية</div>
-        </div>
-
-        <div class="dash-card" onclick="openStats()">
-          <div class="dash-icon">📊</div>
-          <div class="dash-title">الإحصائيات</div>
-          <div class="dash-sub">Royal Statistics – إنتاجية الأقسام</div>
-        </div>
-
-        <div class="dash-card" onclick="openPage('rejectedCases')">
-          <div class="dash-icon">🗂</div>
-          <div class="dash-title">الحالات المرفوضة</div>
-          <div class="dash-sub">Rejected Cases – منع البداية الخاطئة</div>
-        </div>
-
-        <div class="dash-card" onclick="openPage('searchCase')">
-          <div class="dash-icon">🔎</div>
-          <div class="dash-title">بحث عن حالة</div>
-          <div class="dash-sub">File / Name / LabNumber</div>
-        </div>
-
-        <div class="dash-card" onclick="openPage('techDashboard')">
-          <div class="dash-icon">🧑🏻‍🔧</div>
-          <div class="dash-title">لوحة الفني (تجريبية)</div>
-          <div class="dash-sub">Overview سريع لحالات الفني</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- صفحة تسجيل الحالة في العيادة -->
-    <div id="clinicEntry" class="page">
-      <h2>📝 تسجيل حالة جديدة / New Case Entry</h2>
-      <div class="form-box">
-        <div class="input-row">
-          <label>رقم الملف / File Number</label>
-          <input id="fileNumber" type="text">
-        </div>
-
-        <div class="input-row">
-          <label>اسم المريض / Patient Name</label>
-          <input id="patientName" type="text">
-        </div>
-
-        <div class="input-row">
-          <label>رقم العيادة / Clinic Number</label>
-          <input id="clinicNumber" type="text">
-        </div>
-
-        <div class="input-row">
-          <label>اسم الطبيب / Doctor Name</label>
-          <input id="doctorName" type="text">
-        </div>
-
-        <div class="input-row">
-          <label>نوع الحالة / Case Type</label>
-          <select id="caseType">
-            <option value="RPD">RPD</option>
-            <option value="CD">CD</option>
-            <option value="PFM">Crown / PFM</option>
-            <option value="ORTHO">Ortho</option>
-            <option value="TM">TM</option>
-          </select>
-        </div>
-
-        <div class="input-row">
-          <label>موعد المريض القادم / Next Appointment</label>
-          <input id="nextAppointment" type="date">
-        </div>
-
-        <div class="input-row">
-          <label>ملاحظات الطبيب / Doctor Notes</label>
-          <textarea id="doctorNotes" rows="2" placeholder="مثال: راجعنا occlusion / انتباه للـ shade"></textarea>
-        </div>
-
-        <div class="input-row">
-          <label>تعليمات الطبيب / Doctor Request</label>
-          <textarea id="doctorRequest" rows="2" placeholder="مثال: Metal try-in, reline, repair, shade A3 ..."></textarea>
-        </div>
-
-        <div class="input-row">
-          <label>صور الحالة (أشعة + فم + طلب الطبيب) / Case Images</label>
-          <input id="caseImages" type="file" accept="image/*" multiple>
-          <small>يمكنك اختيار أكثر من صورة مرة واحدة.</small>
-        </div>
-
-        <button class="submit-btn" onclick="saveClinicEntry()">حفظ / Save</button>
-      </div>
-    </div>
-
-    <!-- استلام الحالة في المعمل -->
-    <div id="labReceive" class="page">
-      <h2>🏭 استلام الحالة في المعمل / Lab Receiving</h2>
-      <div class="form-box">
-        <div class="input-row">
-          <label>🔎 ابحث برقم الملف / Search by File Number</label>
-          <input id="labReceiveSearch" type="text" onkeyup="findCaseForLab()">
-        </div>
-        <div id="labReceiveResult"></div>
-      </div>
-    </div>
-
-    <!-- تحويل الفني إلى الأقسام -->
-    <div id="techToDept" class="page">
-      <h2>👨🏻‍🔧 تحويل الفني → الأقسام / Technician Transfer</h2>
-      <div class="form-box">
-        <div class="input-row">
-          <label>🔎 ابحث برقم المعمل / Search by Lab Number</label>
-          <input id="techSearch" type="text" onkeyup="findCaseForTech()">
-        </div>
-        <div id="techResult"></div>
-      </div>
-    </div>
-
-    <!-- استلام المساعدة -->
-    <div id="assistantReceive" class="page">
-      <h2>📦 استلام المساعدة / Assistant Receive</h2>
-      <div class="form-box">
-        <div class="input-row">
-          <label>🔎 ابحث برقم الملف أو المعمل / File or Lab Number</label>
-          <input id="assistSearch" type="text" class="sign-input" onkeyup="findCaseForAssistant()">
-        </div>
-        <div id="assistResult"></div>
-      </div>
-    </div>
-
-    <!-- صفحة الإحصائيات -->
-    <div id="statsPage" class="page">
-      <h2>📊 الإحصائيات الملكية / Royal Statistics</h2>
-      <div class="stats-container">
-        <div id="statsContent"></div>
-      </div>
-    </div>
-
-    <!-- الحالات المرفوضة -->
-    <div id="rejectedCases" class="page">
-      <h2>🗂 الحالات المرفوضة / Rejected Cases</h2>
-      <div class="reject-box">
-        <h3>➕ إضافة حالة مرفوضة</h3>
-        <div class="input-row">
-          <label>رقم الملف / File Number</label>
-          <input id="rejFile" class="sign-input" type="text">
-        </div>
-        <div class="input-row">
-          <label>سبب الرفض / Reason</label>
-          <input id="rejReason" class="sign-input" type="text">
-        </div>
-        <button class="assist-btn" onclick="addRejectedCase()">إضافة / Add</button>
-
-        <hr style="margin:14px 0;">
-
-        <h3>🔍 بحث عن حالة مرفوضة</h3>
-        <input id="searchRejected" class="sign-input" type="text" placeholder="ابحث برقم الملف" onkeyup="findRejected()">
-        <div id="rejectedList" style="margin-top:10px;"></div>
-      </div>
-    </div>
-
-    <!-- بحث عن حالة -->
-    <div id="searchCase" class="page">
-      <h2>🔎 بحث عن حالة / Search Case</h2>
-      <div class="form-box">
-        <input id="searchInput" class="sign-input" type="text" placeholder="اكتب رقم ملف أو اسم أو Lab Number" onkeyup="searchCaseNow()">
-        <div id="searchResult" style="margin-top:10px;"></div>
-      </div>
-    </div>
-
-    <!-- لوحة فني بسيطة -->
-    <div id="techDashboard" class="page">
-      <h2>🧑🏻‍🔧 لوحة الفني (تجريبية)</h2>
-      <p>يمكنك استخدامها كعرض سريع لحالات فني معيّن.</p>
-      <div class="input-row">
-        <label>اسم الفني / Technician Name</label>
-        <input id="techNameInput" class="sign-input" type="text" placeholder="مثال: Turki O" onkeyup="loadTechCases()">
-      </div>
-      <div class="tech-cards">
-        <div class="tcard green">📦 Total <span id="techTotal"></span></div>
-        <div class="tcard blue">🕒 Today <span id="techToday"></span></div>
-        <div class="tcard purple">✔ Done <span id="techDone"></span></div>
-        <div class="tcard orange">↩ Returned <span id="techReturned"></span></div>
-      </div>
-      <div id="techCaseList"></div>
-    </div>
-
-    <!-- تفاصيل الفني + تبويبات -->
-    <div id="techDetails" class="page" style="display:none;">
-      <h2>🔧 تفاصيل الحالة / Case Details</h2>
-      <div id="techDetailsHeader" class="case-info"></div>
-
-      <!-- تبويبات تحت -->
-      <div id="techTabs">
-        <div class="tab-btn" onclick="openTechTab('infoTab')">📄 Info</div>
-        <div class="tab-btn" onclick="openTechTab('notesTab')">📝 Notes</div>
-        <div class="tab-btn" onclick="openTechTab('requestTab')">📘 Request</div>
-        <div class="tab-btn" onclick="openTechTab('imagesTab')">🖼 Images</div>
-        <div class="tab-btn" onclick="openTechTab('trackTab')">📊 Track</div>
-        <div class="tab-btn" onclick="openTechTab('r4Tab')">🔗 R4</div>
-        <div class="tab-btn" onclick="openTechTab('actionsTab')">⚙️ Actions</div>
-      </div>
-
-      <div id="infoTab" class="tab-section"></div>
-      <div id="notesTab" class="tab-section"></div>
-      <div id="requestTab" class="tab-section"></div>
-      <div id="imagesTab" class="tab-section"></div>
-      <div id="trackTab" class="tab-section"></div>
-      <div id="r4Tab" class="tab-section"></div>
-      <div id="actionsTab" class="tab-section"></div>
-    </div>
-
-    <footer>
-      © 2025 Wedad Aljabari – All Rights Reserved  
-      DSA CONNECT – Designed with 💚 for DSA Lab.
-    </footer>
-  </main>
-</div>
-
-<script>
-  // PIN المدير للإعدادات
-  let managerPIN = "9999";
-  let currentUser = "";
-
-  function login() {
-    const user = document.getElementById("loginUser").value.trim();
-    const pin = document.getElementById("loginPin").value.trim();
-    if (!user || !pin) {
-      alert("⚠ الرجاء إدخال اسم المستخدم والرقم السري");
-      return;
-    }
-    // مؤقتاً أي مستخدم + أي PIN يعتبر دخول ناجح
-    currentUser = user;
-    document.getElementById("userLabel").innerText = "مرحباً " + currentUser + " 🤍";
-    document.getElementById("loginPage").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    openPage("dashboard");
-  }
-
-  function openPage(id) {
-    document.querySelectorAll(".page").forEach(p => p.style.display = "none");
-    const el = document.getElementById(id);
-    if (el) el.style.display = "block";
-    if (id === "statsPage") renderStats();
-  }
-
-  // إعدادات المدير
-  function openSettingsPIN() {
-    document.getElementById("settingsModal").style.display = "flex";
-  }
-
-  function checkSettingsPIN() {
-    const pin = document.getElementById("settingsPIN").value.trim();
-    if (pin === managerPIN) {
-      document.getElementById("settingsModal").style.display = "none";
-      document.getElementById("settingsPanel").style.left = "0";
-    } else {
-      alert("❌ رقم PIN غير صحيح");
-    }
-  }
-
-  function changeManagerPIN() {
-    const newPin = document.getElementById("newManagerPIN").value.trim();
-    if (!newPin) {
-      alert("⚠ أدخلي PIN جديد");
-      return;
-    }
-    managerPIN = newPin;
-    alert("✔ تم تغيير PIN المدير بنجاح");
-  }
-
-  function backupData() {
-    const cases = localStorage.getItem("dsa_cases") || "[]";
-    const blob = new Blob([cases], {type: "application/json"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "dsa_connect_cases_backup.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  // حفظ حالة جديدة من العيادة
-  function saveClinicEntry() {
-    let filesInput = document.getElementById("caseImages");
-    let images = [];
-
-    if (filesInput && filesInput.files && filesInput.files.length > 0) {
-      for (let i = 0; i < filesInput.files.length; i++) {
-        const file = filesInput.files[i];
-        const url = URL.createObjectURL(file);
-        images.push({
-          name: file.name,
-          url: url
-        });
-      }
-    }
-
-    let caseObj = {
-      id: Date.now(),
-      file: document.getElementById("fileNumber").value.trim(),
-      name: document.getElementById("patientName").value.trim(),
-      clinic: document.getElementById("clinicNumber").value.trim(),
-      doctor: document.getElementById("doctorName").value.trim(),
-      type: document.getElementById("caseType").value,
-      next: document.getElementById("nextAppointment").value,
-      status: "ENTERED_CLINIC",
-      deptKey: document.getElementById("caseType").value,
-      labNumber: "LAB-" + Math.floor(10000 + Math.random() * 90000),
-      time: new Date().toLocaleString(),
-      doctorNotes: document.getElementById("doctorNotes").value.trim(),
-      doctorRequest: document.getElementById("doctorRequest").value.trim(),
-      images: images,
-      assignedTech: ""
-    };
-
-    if (!caseObj.file || !caseObj.name || !caseObj.clinic || !caseObj.doctor || !caseObj.type) {
-      alert("⚠ الرجاء تعبئة الحقول الأساسية (ملف، اسم، عيادة، طبيب، نوع الحالة).");
-      return;
-    }
-
-    let cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    cases.push(caseObj);
-    localStorage.setItem("dsa_cases", JSON.stringify(cases));
-
-    alert("✔ تم تسجيل الحالة بنجاح!\n✔ Case saved successfully!");
-    openPage("dashboard");
-  }
-
-  // استلام المعمل
-  function findCaseForLab() {
-    const file = document.getElementById("labReceiveSearch").value.trim();
-    const cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    const found = cases.find(c => c.file === file);
-    const target = document.getElementById("labReceiveResult");
-
-    if (!found) {
-      target.innerHTML = "<p style='margin-top:8px;color:#888;'>لا توجد حالة بهذا الرقم</p>";
-      return;
-    }
-
-    target.innerHTML = `
-      <div class="case-info">
-        <b>رقم الملف:</b> ${found.file}<br>
-        <b>اسم المريض:</b> ${found.name}<br>
-        <b>العيادة:</b> ${found.clinic}<br>
-        <b>الطبيب:</b> ${found.doctor}<br>
-        <b>نوع الحالة:</b> ${found.type}<br>
-        <b>رقم المعمل:</b> ${found.labNumber}<br>
-        <b>وقت التسجيل:</b> ${found.time}<br>
-        ${found.doctorNotes ? `<b>ملاحظات الطبيب:</b> ${found.doctorNotes}<br>` : ""}
-        ${found.doctorRequest ? `<b>تعليمات الطبيب:</b> ${found.doctorRequest}<br>` : ""}
-      </div>
-
-      ${
-        found.images && found.images.length
-        ? `<div style="margin-bottom:10px;">
-            <b>صور الحالة:</b><br>
-            ${found.images.map(img => `
-              <div style="margin-top:6px;">
-                <img src="${img.url}" style="max-width:100%;border-radius:8px;border:1px solid #ddd;">
-                <div style="font-size:0.8rem;color:#555;">${img.name}</div>
-              </div>
-            `).join("")}
-          </div>`
-        : `<p style="color:#777;">لا توجد صور مرفوعة</p>`
-      }
-
-      <button class="assist-btn" onclick="submitLabReceive('${found.id}')">
-        ✔ تأكيد استلام المعمل / Confirm Receive
-      </button>
-    `;
-  }
-
-  function submitLabReceive(caseId) {
-    let cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    let target = cases.find(c => c.id == caseId);
-
-    target.status = "IN_LAB";
-    target.receiveTime = new Date().toLocaleString();
-
-    localStorage.setItem("dsa_cases", JSON.stringify(cases));
-    alert("✔ تم استلام الحالة في المعمل بنجاح!");
-    openPage("dashboard");
-  }
-
-  // تحويل الفني إلى الأقسام
-  function findCaseForTech() {
-    const lab = document.getElementById("techSearch").value.trim();
-    const cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    const found = cases.find(c => c.labNumber === lab);
-    const target = document.getElementById("techResult");
-
-    if (!found) {
-      target.innerHTML = "<p style='margin-top:8px;color:#888;'>لا توجد حالة بهذا الرقم</p>";
-      return;
-    }
-
-    target.innerHTML = `
-      <div class="case-info">
-        <b>رقم الملف:</b> ${found.file}<br>
-        <b>اسم المريض:</b> ${found.name}<br>
-        <b>نوع الحالة:</b> ${found.type}<br>
-        <b>الطبيب:</b> ${found.doctor}<br>
-        <b>الحالة الحالية:</b> ${found.status}<br>
-        <b>رقم المعمل:</b> ${found.labNumber}<br>
-        <b>الفني الحالي:</b> ${found.assignedTech || "لم يحدد"}<br>
-      </div>
-
-      <div class="input-row">
-        <label>اختر القسم / Select Department</label>
-        <select id="deptSelect">
-          <option value="RDC1">RDC1</option>
-          <option value="RDC2">RDC2</option>
-          <option value="BOX">Box</option>
-          <option value="CLINIC">Clinic</option>
-        </select>
-      </div>
-
-      <div class="input-row">
-        <label>اسم الفني / Technician</label>
-        <input id="techAssign" type="text" placeholder="مثال: Turki O">
-      </div>
-
-      <button class="assist-btn" onclick="submitTechTransfer('${found.id}')">
-        ✔ تحويل الحالة / Transfer Case
-      </button>
-    `;
-  }
-
-  function submitTechTransfer(caseId) {
-    let cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    let target = cases.find(c => c.id == caseId);
-
-    const dept = document.getElementById("deptSelect").value;
-    const techName = document.getElementById("techAssign").value.trim();
-
-    target.status = "READY_FOR_" + dept;
-    target.transferTime = new Date().toLocaleString();
-    if (techName) target.assignedTech = techName;
-
-    localStorage.setItem("dsa_cases", JSON.stringify(cases));
-    alert("✔ تم تحويل الحالة بنجاح!");
-    openPage("dashboard");
-  }
-
-  // استلام المساعدة
-  function findCaseForAssistant() {
-    const val = document.getElementById("assistSearch").value.trim();
-    const cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    const found = cases.find(c => c.file === val || c.labNumber === val);
-    const target = document.getElementById("assistResult");
-
-    if (!found) {
-      target.innerHTML = "<p style='margin-top:8px;color:#888;'>لا يوجد أي حالة</p>";
-      return;
-    }
-
-    target.innerHTML = `
-      <div class="assist-info">
-        <b>رقم الملف:</b> ${found.file}<br>
-        <b>اسم المريض:</b> ${found.name}<br>
-        <b>المرحلة الحالية:</b> ${found.status}<br>
-        <b>رقم المعمل:</b> ${found.labNumber}<br>
-        ${found.doctorNotes ? `<b>ملاحظات الطبيب:</b> ${found.doctorNotes}<br>` : ""}
-        ${found.doctorRequest ? `<b>تعليمات الطبيب:</b> ${found.doctorRequest}<br>` : ""}
-      </div>
-
-      ${
-        found.images && found.images.length ? `
-          <b>صور الحالة:</b><br>
-          ${found.images.map(im => `
-            <img src="${im.url}" style="max-width:100%;border-radius:8px;margin-top:4px;">
-          `).join("")}
-        ` : ""
-      }
-
-      <div class="input-row">
-        <label>توقيع المساعدة / Signature</label>
-        <input id="assistSignature" type="text" class="sign-input" placeholder="اكتبي الاسم هنا">
-      </div>
-
-      <button class="assist-btn" onclick="submitAssistantReceive('${found.id}')">
-        ✔ تأكيد استلام العيادة / Confirm Clinic Receive
-      </button>
-    `;
-  }
-
-  function submitAssistantReceive(caseId) {
-    let cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    let target = cases.find(c => c.id == caseId);
-
-    const sign = document.getElementById("assistSignature").value.trim();
-    if (!sign) {
-      alert("⚠ الرجاء إدخال توقيع المساعدة");
-      return;
-    }
-
-    target.status = "CLINIC_RECEIVED";
-    target.assistantSign = sign;
-    target.assistantTime = new Date().toLocaleString();
-
-    localStorage.setItem("dsa_cases", JSON.stringify(cases));
-    alert("💚 تم استلام الحالة، يومك مبارك يا بطلة!");
-    openPage("dashboard");
-  }
-
-  // الإحصائيات
-  function openStats() {
-    openPage("statsPage");
-    renderStats();
-  }
-
-  function renderStats() {
-    let cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-
-    const total = cases.length;
-    const inLab = cases.filter(c => c.status === "IN_LAB").length;
-    const clinicReceived = cases.filter(c => c.status === "CLINIC_RECEIVED").length;
-    const finished = clinicReceived;
-    const returned = cases.filter(c => c.status === "RETURNED").length;
-
-    let html = `
-      <div class="stat-card">
-        <div class="stat-title">📦 إجمالي الحالات / Total Cases</div>
-        <div class="stat-number">${total}</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-title">🏭 داخل المعمل / In Lab</div>
-        <div class="stat-number">${inLab}</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-title">📨 مكتملة / Completed</div>
-        <div class="stat-number">${finished}</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-title">🔄 راجعة / Returned</div>
-        <div class="stat-number">${returned}</div>
-      </div>
-
-      <hr style="margin:18px 0;">
-      <h3>🦷 إنجاز الأقسام / Department Performance</h3>
-    `;
-
-    const deptColors = {
-      RPD: "#ff7675",
-      CD: "#74b9ff",
-      PFM: "#ffeaa7",
-      TM: "#55efc4",
-      ORTHO: "#a29bfe"
-    };
-
-    const byDept = {};
-    const completedDept = {};
-
-    cases.forEach(c => {
-      const d = c.deptKey;
-      if (!d) return;
-      byDept[d] = (byDept[d] || 0) + 1;
-      if (c.status === "CLINIC_RECEIVED") {
-        completedDept[d] = (completedDept[d] || 0) + 1;
-      }
-    });
-
-    Object.keys(byDept).forEach(d => {
-      const totalD = byDept[d];
-      const doneD = completedDept[d] || 0;
-      const percent = totalD ? Math.floor((doneD / totalD) * 100) : 0;
-      html += `
-        <div class="stat-card">
-          <div class="stat-title">${d} Cases</div>
-          <p><b>${doneD}</b> / ${totalD}</p>
-          <div class="bar">
-            <div class="bar-fill" style="width:${percent}%;background:${deptColors[d] || '#3CB371'};"></div>
+  <div class="app">
+    <!-- HEADER -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="logo">
+            <span class="icon">🦷</span>
+            <span>DSA Lab System</span>
           </div>
-          <p style="font-size:0.9rem;margin-top:4px;">Percentage: ${percent}%</p>
+          <div class="subtitle">
+            نظام متابعة حالات المعمل – Clinic &amp; Lab Tracking
+          </div>
         </div>
-      `;
+        <div class="pill" id="user-pill" style="display:none">
+          👩‍⚕️ <span id="user-name-pill">User</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="card">
+      <h2>تسجيل الدخول / Login</h2>
+      <p class="tagline">
+        يا مرحبا 🤍 جاهزين نشوف النظام؟  
+        <small>Welcome! Please sign in to start managing lab cases.</small>
+      </p>
+
+      <label>اسم المستخدم / Username</label>
+      <input id="login-username" placeholder="مثال: Wedad" />
+
+      <label>كلمة المرور / Password</label>
+      <input id="login-password" type="password" placeholder="••••••" />
+
+      <button class="btn btn-primary" id="login-btn">
+        دخول / Login
+      </button>
+
+      <div class="muted">
+        (مؤقتًا) كلمة المرور الموحدة: <b>dsa1234</b> – يمكن تغييرها لاحقًا من الإعدادات.
+      </div>
+      <div id="login-message" class="error" style="display:none"></div>
+    </div>
+
+    <!-- MAIN SCREEN -->
+    <div id="main-screen" class="hidden">
+      <!-- Shortcuts -->
+      <div class="card">
+        <h2>لوحة التحكم / Dashboard</h2>
+        <p class="tagline">
+          اختر ما تريد القيام به الآن  
+          <small>Choose an action to get started.</small>
+        </p>
+
+        <div class="grid">
+          <div class="shortcut-card" id="shortcut-new-case">
+            <div class="left">
+              <div class="shortcut-icon">📝</div>
+              <div>
+                تسجيل حالة جديدة  
+                <br><small>New clinic case entry</small>
+              </div>
+            </div>
+            <span>→</span>
+          </div>
+
+          <div class="shortcut-card" id="shortcut-search">
+            <div class="left">
+              <div class="shortcut-icon">🔎</div>
+              <div>
+                بحث عن حالة  
+                <br><small>Search case (file / barcode)</small>
+              </div>
+            </div>
+            <span>→</span>
+          </div>
+
+          <div class="shortcut-card">
+            <div class="left">
+              <div class="shortcut-icon">📊</div>
+              <div>
+                الإحصائيات (لاحقًا)  
+                <br><small>Statistics – coming soon</small>
+              </div>
+            </div>
+            <span>…</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW CASE FROM CLINIC -->
+      <div class="card" id="new-case-card">
+        <div class="card-header">
+          <h3>📝 تسجيل حالة من العيادة / Clinic Case Entry</h3>
+          <div class="status-pill">
+            المرحلة الأولى: Entered from Clinic
+          </div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label>رقم الملف / File Number</label>
+            <input id="fileNumber" placeholder="مثال: 123456" />
+          </div>
+          <div>
+            <label>اسم المريض / Patient Name</label>
+            <input id="patientName" placeholder="Patient full name" />
+          </div>
+          <div>
+            <label>رقم العيادة / Clinic Number</label>
+            <input id="clinicNumber" placeholder="مثال: 310" />
+          </div>
+          <div>
+            <label>اسم الطبيب / Doctor Name</label>
+            <input id="doctorName" placeholder="Dr. Magdy" />
+          </div>
+          <div>
+            <label>نوع الحالة / Case Type</label>
+            <select id="caseType">
+              <option value="crown">Crown</option>
+              <option value="RPD">RPD</option>
+              <option value="PFM">PFM</option>
+              <option value="Ortho">Ortho</option>
+              <option value="Temporary">Temporary</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label>موعد المريض القادم / Next Appointment</label>
+            <input id="nextAppointment" type="date" />
+          </div>
+        </div>
+
+        <label>ملاحظة الطبيب (إن وجدت) / Doctor Note (optional)</label>
+        <textarea id="note" placeholder="Upper crown, shade A2..."></textarea>
+
+        <button class="btn btn-primary" id="save-case-btn">
+          💾 حفظ الحالة / Save Case
+        </button>
+        <button class="btn btn-outline" id="clear-case-btn">
+          مسح الحقول / Clear
+        </button>
+
+        <div id="save-message" class="success" style="display:none"></div>
+        <div id="save-error" class="error" style="display:none"></div>
+
+        <p class="muted">
+          عند الحفظ، يتم إنشاء:  
+          – رقم معمل تلقائي LabNumber  
+          – باركود نصي بسيط (يمكن تطويره لاحقًا إلى QR فعلي)  
+          – أول خطوة في تتبع الحالة داخل tracking 📍
+        </p>
+      </div>
+
+      <!-- SEARCH CASE -->
+      <div class="card" id="search-card">
+        <h3>🔎 بحث عن حالة / Search Case</h3>
+        <div class="grid">
+          <div>
+            <label>بحث برقم الملف / File Number</label>
+            <input id="search-file" placeholder="File Number" />
+          </div>
+          <div>
+            <label>بحث بالباركود / Barcode</label>
+            <input id="search-barcode" placeholder="LAB-00001 ..." />
+          </div>
+        </div>
+        <button class="btn btn-outline" id="search-btn">بحث / Search</button>
+        <div id="search-message" class="error" style="display:none"></div>
+
+        <div id="search-result" class="card" style="margin-top:14px; display:none; background:#f9fafb;">
+          <h4>نتيجة البحث / Case Result</h4>
+          <div id="case-basic"></div>
+          <div class="timeline" id="case-timeline"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <button class="btn btn-outline" id="logout-btn">تسجيل خروج / Logout</button>
+        <div class="muted">
+          © 2025 – جميع حقوق النظام محفوظة لـ <b>Wedad Aljabari</b>.  
+          All rights reserved to Wedad Aljabari – DSA Lab System.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + App Logic -->
+  <script type="module">
+    // =========================
+    // 1) Firebase imports
+    // =========================
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      doc,
+      getDoc,
+      getDocs,
+      query,
+      where,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    // =========================
+    // 2) Firebase config (من حسابك)
+    // =========================
+    const firebaseConfig = {
+      apiKey: "AIzaSyARQRegsdUi6hO_p6txm1XjnAV45cAU4Ac",
+      authDomain: "dsa-lab-system.firebaseapp.com",
+      projectId: "dsa-lab-system",
+      storageBucket: "dsa-lab-system.firebasestorage.app",
+      messagingSenderId: "1081285804674",
+      appId: "1:1081285804674:web:91e4775b7bfa5e60366a9b",
+      measurementId: "G-271TRGHNVJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // =========================
+    // 3) Simple login
+    // =========================
+    const loginScreen = document.getElementById("login-screen");
+    const mainScreen  = document.getElementById("main-screen");
+    const loginBtn    = document.getElementById("login-btn");
+    const loginMsg    = document.getElementById("login-message");
+    const userPill    = document.getElementById("user-pill");
+    const userNamePill= document.getElementById("user-name-pill");
+
+    const PASSWORD = "dsa1234"; // مؤقت – نعدله لاحقًا ونضيف مستوى ثاني للإحصائيات
+
+    loginBtn.addEventListener("click", () => {
+      const user = document.getElementById("login-username").value.trim();
+      const pass = document.getElementById("login-password").value.trim();
+      loginMsg.style.display = "none";
+
+      if (!user || !pass) {
+        loginMsg.textContent = "رجاءً أدخل اسم المستخدم وكلمة المرور.";
+        loginMsg.style.display = "block";
+        return;
+      }
+      if (pass !== PASSWORD) {
+        loginMsg.textContent = "كلمة المرور غير صحيحة.";
+        loginMsg.style.display = "block";
+        return;
+      }
+
+      // نجاح
+      loginScreen.classList.add("hidden");
+      mainScreen.classList.remove("hidden");
+      userPill.style.display = "inline-flex";
+      userNamePill.textContent = user.toUpperCase();
     });
 
-    document.getElementById("statsContent").innerHTML = html;
-  }
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      mainScreen.classList.add("hidden");
+      loginScreen.classList.remove("hidden");
+    });
 
-  // الحالات المرفوضة
-  function addRejectedCase() {
-    const file = document.getElementById("rejFile").value.trim();
-    const reason = document.getElementById("rejReason").value.trim();
+    // Shortcuts scroll
+    document.getElementById("shortcut-new-case").addEventListener("click", () => {
+      document.getElementById("new-case-card").scrollIntoView({ behavior: "smooth" });
+    });
+    document.getElementById("shortcut-search").addEventListener("click", () => {
+      document.getElementById("search-card").scrollIntoView({ behavior: "smooth" });
+    });
 
-    if (!file || !reason) {
-      alert("⚠ الرجاء تعبئة كل الحقول");
-      return;
+    // =========================
+    // 4) Save new case
+    // =========================
+    const saveBtn = document.getElementById("save-case-btn");
+    const clearBtn = document.getElementById("clear-case-btn");
+    const saveMsg = document.getElementById("save-message");
+    const saveErr = document.getElementById("save-error");
+
+    function clearForm() {
+      document.getElementById("fileNumber").value = "";
+      document.getElementById("patientName").value = "";
+      document.getElementById("clinicNumber").value = "";
+      document.getElementById("doctorName").value = "";
+      document.getElementById("caseType").value = "crown";
+      document.getElementById("nextAppointment").value = "";
+      document.getElementById("note").value = "";
     }
 
-    let rej = JSON.parse(localStorage.getItem("rejected_cases") || "[]");
-    rej.push({file, reason});
-    localStorage.setItem("rejected_cases", JSON.stringify(rej));
+    clearBtn.addEventListener("click", clearForm);
 
-    alert("✔ تمت إضافة الحالة إلى قائمة المرفوضين");
-    document.getElementById("rejFile").value = "";
-    document.getElementById("rejReason").value = "";
-    findRejected();
-  }
+    saveBtn.addEventListener("click", async () => {
+      saveMsg.style.display = "none";
+      saveErr.style.display = "none";
 
-  function findRejected() {
-    const val = document.getElementById("searchRejected").value.trim();
-    let rej = JSON.parse(localStorage.getItem("rejected_cases") || "[]");
+      const fileNumber      = document.getElementById("fileNumber").value.trim();
+      const patientName     = document.getElementById("patientName").value.trim();
+      const clinicNumber    = document.getElementById("clinicNumber").value.trim();
+      const doctorName      = document.getElementById("doctorName").value.trim();
+      const caseType        = document.getElementById("caseType").value;
+      const nextAppointment = document.getElementById("nextAppointment").value;
+      const note            = document.getElementById("note").value.trim();
 
-    const found = rej.filter(r => r.file.includes(val));
-    let html = "";
-    found.forEach(r => {
-      html += `
-        <div class="reject-item">
-          <b>ملف:</b> ${r.file}<br>
-          <b>سبب:</b> ${r.reason}
-        </div>
-      `;
-    });
-    document.getElementById("rejectedList").innerHTML = html;
-  }
+      if (!fileNumber || !patientName || !clinicNumber || !doctorName) {
+        saveErr.textContent = "رجاءً عبّي الحقول الأساسية (رقم الملف، اسم المريض، رقم العيادة، اسم الطبيب).";
+        saveErr.style.display = "block";
+        return;
+      }
 
-  // بحث عن حالة
-  function searchCaseNow() {
-    const val = document.getElementById("searchInput").value.trim().toLowerCase();
-    let cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
+      try {
+        // رقم معمل بسيط + باركود نصي
+        const labNumber = "LAB-" + Math.floor(100000 + Math.random() * 900000);
+        const barcode   = labNumber + "-" + fileNumber;
 
-    const found = cases.filter(c =>
-      c.file.toLowerCase().includes(val) ||
-      c.name.toLowerCase().includes(val) ||
-      c.labNumber.toLowerCase().includes(val)
-    );
+        // 1) إنشاء case في مجموعة cases
+        const caseRef = await addDoc(collection(db, "cases"), {
+          fileNumber,
+          patientName,
+          clinicNumber,
+          doctorName,
+          caseType,
+          nextAppointment: nextAppointment || null,
+          note: note || null,
+          status: "Entered from Clinic",
+          labNumber,
+          barcode,
+          createdAt: serverTimestamp()
+        });
 
-    let html = "";
-    found.forEach(c => {
-      html += `
-        <div class="assist-info">
-          <b>ملف:</b> ${c.file}<br>
-          <b>اسم:</b> ${c.name}<br>
-          <b>Lab:</b> ${c.labNumber}<br>
-          <b>القسم:</b> ${c.deptKey || "-" }<br>
-          <b>الحالة:</b> ${c.status}<br>
-          <b>الفني:</b> ${c.assignedTech || "—"}<br>
-        </div>
-      `;
-    });
+        // 2) أول خطوة في tracking
+        await addDoc(collection(db, "cases", caseRef.id, "tracking"), {
+          status: "Entered from Clinic",
+          updatedBy: "Clinic Reception",
+          time: serverTimestamp(),
+          note: "Case added to system"
+        });
 
-    document.getElementById("searchResult").innerHTML = html;
-  }
-
-  // لوحة الفني البسيطة
-  function todayDate() {
-    const d = new Date();
-    return d.toLocaleDateString();
-  }
-
-  function loadTechCases() {
-    const techName = document.getElementById("techNameInput").value.trim();
-    let list = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    let myCases = techName ? list.filter(c => (c.assignedTech || "").toLowerCase().includes(techName.toLowerCase())) : [];
-
-    document.getElementById("techTotal").innerText = myCases.length;
-    document.getElementById("techToday").innerText = myCases.filter(c => (c.time || "").includes(todayDate())).length;
-    document.getElementById("techDone").innerText = myCases.filter(c => c.status === "CLINIC_RECEIVED").length;
-    document.getElementById("techReturned").innerText = myCases.filter(c => c.status === "RETURNED").length;
-
-    let html = "";
-    myCases.forEach(c => {
-      html += `
-        <div class="tech-case-card">
-          <b>${c.name}</b> — ${c.type}<br>
-          ملف: ${c.file}<br>
-          Lab: ${c.labNumber}<br>
-          حالة: ${c.status}<br>
-          <button class="assist-btn" onclick="openTechDetails('${c.id}')">تفاصيل / Details</button>
-        </div>
-      `;
+        saveMsg.textContent = `تم حفظ الحالة بنجاح ✅ – رقم المعمل: ${labNumber}`;
+        saveMsg.style.display = "block";
+        clearForm();
+      } catch (err) {
+        console.error(err);
+        saveErr.textContent = "حدث خطأ أثناء حفظ الحالة. تأكد من الاتصال بالإنترنت ثم حاولي مرة أخرى.";
+        saveErr.style.display = "block";
+      }
     });
 
-    document.getElementById("techCaseList").innerHTML = html;
-  }
+    // =========================
+    // 5) Search case
+    // =========================
+    const searchBtn   = document.getElementById("search-btn");
+    const searchMsg   = document.getElementById("search-message");
+    const searchRes   = document.getElementById("search-result");
+    const caseBasic   = document.getElementById("case-basic");
+    const caseTimeline= document.getElementById("case-timeline");
 
-  // تفاصيل الفني + تبويبات
-  let currentTechCase = null;
+    searchBtn.addEventListener("click", async () => {
+      searchMsg.style.display = "none";
+      searchRes.style.display = "none";
+      caseBasic.innerHTML = "";
+      caseTimeline.innerHTML = "";
 
-  function openTechDetails(caseId) {
-    let list = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    currentTechCase = list.find(c => c.id == caseId);
-    openPage("techDetails");
-    loadTechTabs();
-    openTechTab("infoTab");
-  }
+      const fileSearch = document.getElementById("search-file").value.trim();
+      const barcodeSearch = document.getElementById("search-barcode").value.trim();
 
-  function openTechTab(tabId) {
-    document.querySelectorAll(".tab-section").forEach(t => t.classList.remove("active-tab"));
-    const el = document.getElementById(tabId);
-    if (el) el.classList.add("active-tab");
-  }
+      if (!fileSearch && !barcodeSearch) {
+        searchMsg.textContent = "أدخلي رقم ملف أو باركود للبحث.";
+        searchMsg.style.display = "block";
+        return;
+      }
 
-  function loadTechTabs() {
-    let c = currentTechCase;
-    if (!c) return;
+      try {
+        // نحدد نوع البحث
+        let q;
+        if (fileSearch) {
+          q = query(collection(db, "cases"), where("fileNumber", "==", fileSearch));
+        } else {
+          q = query(collection(db, "cases"), where("barcode", "==", barcodeSearch));
+        }
 
-    document.getElementById("techDetailsHeader").innerHTML = `
-      <b>${c.name}</b> — ${c.type}<br>
-      ملف: ${c.file} | Lab: ${c.labNumber}<br>
-      طبيب: ${c.doctor} | عيادة: ${c.clinic}<br>
-      فني: ${c.assignedTech || "—"}<br>
-      حالة: ${c.status}
-    `;
+        const snapshot = await getDocs(q);
+        if (snapshot.empty) {
+          searchMsg.textContent = "لا توجد حالة مطابقة.";
+          searchMsg.style.display = "block";
+          return;
+        }
 
-    document.getElementById("infoTab").innerHTML = `
-      <b>File:</b> ${c.file}<br>
-      <b>Patient:</b> ${c.name}<br>
-      <b>Doctor:</b> ${c.doctor}<br>
-      <b>Clinic:</b> ${c.clinic}<br>
-      <b>Case Type:</b> ${c.type}<br>
-      <b>Next Appointment:</b> ${c.next || "—"}<br>
-      <b>Status:</b> ${c.status}<br>
-      <b>Lab Number:</b> ${c.labNumber}<br>
-    `;
+        // أول نتيجة
+        const caseDoc = snapshot.docs[0];
+        const data = caseDoc.data();
 
-    document.getElementById("notesTab").innerHTML = `
-      <h3>📝 Doctor Notes</h3>
-      <p>${c.doctorNotes || "—"}</p>
-    `;
+        caseBasic.innerHTML = `
+          <div><b>المريض:</b> ${data.patientName} (${data.fileNumber})</div>
+          <div><b>العيادة:</b> ${data.clinicNumber} – <b>الطبيب:</b> ${data.doctorName}</div>
+          <div><b>نوع الحالة:</b> ${data.caseType} – <b>Lab#</b> ${data.labNumber}</div>
+          <div><b>الباركود:</b> ${data.barcode}</div>
+          <div><b>الحالة الحالية:</b> ${data.status}</div>
+        `;
 
-    document.getElementById("requestTab").innerHTML = `
-      <h3>📘 Doctor Request</h3>
-      <p>${c.doctorRequest || "—"}</p>
-    `;
+        // قراءة tracking
+        const trackingSnap = await getDocs(collection(db, "cases", caseDoc.id, "tracking"));
+        let timelineHtml = "";
+        trackingSnap.forEach(tr => {
+          const t = tr.data();
+          const time = t.time?.toDate ? t.time.toDate() : null;
+          const timeStr = time ? time.toLocaleString() : "";
+          timelineHtml += `
+            <div class="timeline-item">
+              <b>${t.status}</b>
+              <span>– ${t.updatedBy || ""}</span>
+              <span>${timeStr ? " – " + timeStr : ""}</span>
+              ${t.note ? `<div class="muted">${t.note}</div>` : ""}
+            </div>
+          `;
+        });
 
-    let imgHtml = "";
-    if (c.images && c.images.length) {
-      c.images.forEach(img => {
-        imgHtml += `<img src="${img.url}" style="width:100%;border-radius:8px;margin-bottom:8px;">`;
-      });
-    } else imgHtml = "<p>No images uploaded</p>";
-    document.getElementById("imagesTab").innerHTML = imgHtml;
+        caseTimeline.innerHTML = timelineHtml || "<div class='muted'>لا يوجد تتبع حتى الآن.</div>";
+        searchRes.style.display = "block";
 
-    document.getElementById("trackTab").innerHTML = `
-      <h3>📊 Tracking</h3>
-      <p>Entered Clinic → Transit → Arrived Lab → Assigned Technician → In Progress → Completed</p>
-    `;
-
-    document.getElementById("r4Tab").innerHTML = `
-      <button onclick="openR4('${c.file}')" class="assist-btn" style="background:#2c5282;">
-        🔗 Open in R4
-      </button>
-    `;
-
-    document.getElementById("actionsTab").innerHTML = `
-      <button class="assist-btn" onclick="completeCase('${c.id}')">✔ Complete</button>
-      <button class="assist-btn" style="background:#E68A21;" onclick="returnCase('${c.id}')">↩ Return</button>
-    `;
-  }
-
-  function openR4(fileNumber) {
-    // عدلي الرابط حسب نظام R4 عندكم
-    window.open("https://hospital-r4-system.example.com/patient?file=" + fileNumber, "_blank");
-  }
-
-  function completeCase(caseId) {
-    let cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    let target = cases.find(c => c.id == caseId);
-    target.status = "CLINIC_RECEIVED";
-    target.completeTime = new Date().toLocaleString();
-    localStorage.setItem("dsa_cases", JSON.stringify(cases));
-    alert("✔ تم إنهاء الحالة كـ Completed / Clinic Received");
-    openPage("dashboard");
-  }
-
-  function returnCase(caseId) {
-    let cases = JSON.parse(localStorage.getItem("dsa_cases") || "[]");
-    let target = cases.find(c => c.id == caseId);
-    target.status = "RETURNED";
-    target.returnTime = new Date().toLocaleString();
-    localStorage.setItem("dsa_cases", JSON.stringify(cases));
-    alert("↩ تم وضع الحالة كـ Returned (راجعة)");
-    openPage("dashboard");
-  }
-</script>
+      } catch (err) {
+        console.error(err);
+        searchMsg.textContent = "حدث خطأ أثناء البحث.";
+        searchMsg.style.display = "block";
+      }
+    });
+  </script>
 </body>
 </html>
