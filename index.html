@@ -2,636 +2,1189 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>DSA Lab System – Clinic Entry</title>
+  <title>DSA Lab System – Wedad</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --green-main: #4caf6a;
+      --green-light: #e7f7ee;
+      --green-dark: #2f7b48;
+      --bg: #f5f7fa;
+      --card-radius: 16px;
+      --shadow-soft: 0 10px 25px rgba(0,0,0,0.08);
+      --transition: 0.25s ease;
+      --danger: #ff5252;
+      --gray: #888;
+      --font-ar: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: var(--font-ar);
+    }
+
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #e9f9f3, #ffffff);
-      color: #1e272e;
+      background: radial-gradient(circle at top left, #f0fff7 0, #f5f7fa 40%, #eaf5ff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      color: #222;
     }
-    .app {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px 16px 40px;
+
+    .app-shell {
+      width: 100%;
+      max-width: 1200px;
+      margin: 16px;
+      background: rgba(255,255,255,0.96);
+      border-radius: 24px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
-    h1, h2, h3 {
-      margin: 0 0 12px;
-    }
-    .logo {
-      font-weight: 700;
-      font-size: 20px;
-      color: #0f9d58;
+
+    header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #edf2f7;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 12px;
+      background: linear-gradient(90deg, var(--green-main), #7bd389);
+      color: #fff;
     }
-    .logo span.icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: #0f9d58;
-      display: inline-flex;
+
+    header .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.03em;
+    }
+
+    header small {
+      opacity: 0.9;
+      font-size: 0.8rem;
+    }
+
+    header .user-info {
+      text-align: left;
+      font-size: 0.8rem;
+    }
+
+    header .user-info strong {
+      display: block;
+      font-size: 0.9rem;
+    }
+
+    main {
+      padding: 20px;
+      overflow: auto;
+      flex: 1;
+    }
+
+    /* ---------- login ---------- */
+    .screen {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+    .screen.active {
+      display: block;
+    }
+
+    .centered {
+      max-width: 420px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 28px 24px 26px;
+      border-radius: 20px;
+      box-shadow: var(--shadow-soft);
+      text-align: center;
+    }
+
+    .logo-circle {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-main), var(--green-dark));
+      display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 18px;
+      font-weight: 700;
+      font-size: 1.4rem;
+      margin: 0 auto 10px;
     }
-    .card {
-      background: #ffffff;
-      border-radius: 14px;
-      padding: 20px 18px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-      margin-top: 16px;
+
+    h2 {
+      margin: 6px 0 10px;
+      font-size: 1.3rem;
     }
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
+
     .subtitle {
-      font-size: 13px;
-      color: #6b7280;
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-bottom: 14px;
     }
-    .hidden {
-      display: none;
-    }
-    label {
+
+    .subtitle small {
       display: block;
-      margin-top: 10px;
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 0.82rem;
     }
-    input, select, textarea {
+
+    .field {
+      text-align: right;
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.85rem;
+      color: #444;
+    }
+
+    .field input, .field select, .field textarea {
       width: 100%;
-      box-sizing: border-box;
-      padding: 8px 10px;
-      margin-top: 4px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      font-size: 13px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid #d1d9e6;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      background: #fbfcff;
     }
-    input:focus, select:focus, textarea:focus {
-      border-color: #0f9d58;
-      box-shadow: 0 0 0 1px rgba(15,157,88,0.15);
+
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--green-main);
+      box-shadow: 0 0 0 2px rgba(76,175,106,0.18);
+      background: #fff;
     }
-    textarea {
-      min-height: 60px;
-      resize: vertical;
-    }
+
     .btn {
       border: none;
       border-radius: 999px;
-      padding: 9px 18px;
-      font-size: 13px;
-      font-weight: 600;
+      padding: 9px 16px;
       cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      margin-top: 14px;
+      transition: var(--transition);
     }
+
     .btn-primary {
-      background: #0f9d58;
-      color: #ffffff;
+      background: linear-gradient(135deg, var(--green-main), var(--green-dark));
+      color: #fff;
+      width: 100%;
+      margin-top: 4px;
     }
-    .btn-outline {
-      background: transparent;
-      color: #0f9d58;
-      border: 1px solid rgba(15,157,88,0.3);
-    }
+
     .btn-primary:hover {
-      background: #0c7c45;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(76,175,80,0.3);
     }
-    .btn-outline:hover {
-      background: rgba(15,157,88,0.06);
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--green-dark);
     }
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
+
+    .helper-text {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: 6px;
+    }
+
+    .helper-text code {
+      background: #f0f4f8;
+      padding: 1px 6px;
       border-radius: 999px;
-      background: #ecfdf3;
-      color: #166534;
-      font-size: 12px;
+      font-size: 0.76rem;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-      margin-top: 8px;
+
+    .error-msg {
+      color: var(--danger);
+      font-size: 0.8rem;
+      margin-top: 4px;
+      min-height: 16px;
     }
-    .shortcut-card {
-      background: #f1f5f9;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 13px;
+
+    /* --------- welcome banner --------- */
+    .welcome-banner {
+      margin-bottom: 16px;
+      padding: 14px 14px 14px 18px;
+      border-radius: 18px;
+      background: linear-gradient(120deg, var(--green-main), #7fe0a3);
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
+    }
+
+    .welcome-banner .text-block {
+      max-width: 80%;
+    }
+
+    .welcome-banner h3 {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+    }
+
+    .welcome-banner p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .welcome-banner p small {
+      display: block;
+      font-size: 0.78rem;
+      opacity: 0.9;
+    }
+
+    .welcome-icon {
+      font-size: 1.5rem;
+    }
+
+    /* ---------- cards dashboard ---------- */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--green-light);
+      border-radius: var(--card-radius);
+      padding: 14px 12px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
       cursor: pointer;
-      border: 1px solid transparent;
-      transition: 0.2s;
-    }
-    .shortcut-card .left {
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      border: 1px solid #cfe8da;
       display: flex;
-      align-items: center;
-      gap: 8px;
+      flex-direction: column;
+      gap: 4px;
     }
-    .shortcut-icon {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+      background: #def7ea;
+    }
+
+    .card-icon {
+      font-size: 1.3rem;
+      margin-bottom: 2px;
+    }
+
+    .card-title-ar {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .card-title-en {
+      font-size: 0.78rem;
+      color: #4d6b5b;
+    }
+
+    .card-caption {
+      font-size: 0.78rem;
+      color: var(--gray);
+      margin-top: 2px;
+    }
+
+    /* --------- sections ---------- */
+    .section-panel {
+      margin-top: 18px;
+      padding: 16px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid #e1e7f0;
+    }
+    .section-panel h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+    .section-subtitle {
+      font-size: 0.82rem;
+      color: var(--gray);
+      margin-bottom: 12px;
+    }
+
+    .section-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+      gap: 10px 16px;
+    }
+
+    .section-footer-note {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: 10px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    /* search results */
+    .results-box {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 12px;
+      background: #f7fafc;
+      border: 1px dashed #cbd5e0;
+      font-size: 0.85rem;
+      max-height: 260px;
+      overflow: auto;
+    }
+
+    .badge {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      background: #e0f2f1;
+      gap: 4px;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #e2f7ec;
+      color: #25623a;
+      margin-inline-end: 4px;
     }
-    .shortcut-card:hover {
-      background: #e2f3ec;
-      border-color: #0f9d58;
+
+    .badge.gray {
+      background: #edf2f7;
+      color: #4a5568;
     }
-    .tagline {
-      font-size: 14px;
-      margin-top: 6px;
-      color: #4b5563;
+
+    .label-en {
+      font-size: 0.75rem;
+      color: #718096;
     }
-    .tagline small {
-      display: block;
-      font-size: 12px;
-      color: #6b7280;
+
+    /* settings badge button */
+    .settings-button {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      z-index: 50;
     }
-    .status-pill {
+
+    .settings-chip {
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 6px 12px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 9px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
+    }
+
+    .settings-chip span.icon {
+      width: 22px;
+      height: 22px;
       border-radius: 999px;
-      font-size: 11px;
-      background: #eff6ff;
-      color: #1d4ed8;
+      background: var(--green-main);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
     }
-    .timeline {
+
+    /* specialist-only tag */
+    .specialist-tag {
+      font-size: 0.76rem;
+      color: #c53030;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pill {
+      padding: 1px 8px;
+      border-radius: 999px;
+      background: #fed7d7;
+      color: #822727;
+      font-size: 0.7rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+      gap: 10px;
       margin-top: 10px;
-      border-top: 1px dashed #e5e7eb;
-      padding-top: 10px;
     }
-    .timeline-item {
-      font-size: 12px;
-      margin-bottom: 6px;
+
+    .stat-card {
+      padding: 10px 10px 9px;
+      border-radius: 14px;
+      background: #f0fff4;
+      border: 1px solid #c6f6d5;
+      font-size: 0.86rem;
     }
-    .timeline-item span {
-      color: #6b7280;
+
+    .stat-card strong {
+      font-size: 1.1rem;
     }
+
     .muted {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-top: 6px;
+      color: var(--gray);
+      font-size: 0.8rem;
     }
-    .error {
-      color: #b91c1c;
-      font-size: 12px;
-      margin-top: 6px;
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .success {
-      color: #15803d;
-      font-size: 12px;
-      margin-top: 6px;
-    }
-    @media (max-width: 600px) {
-      .app { padding: 16px 10px 28px; }
+
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .welcome-banner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .welcome-banner .text-block {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <!-- HEADER -->
-    <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="logo">
-            <span class="icon">🦷</span>
-            <span>DSA Lab System</span>
-          </div>
-          <div class="subtitle">
-            نظام متابعة حالات المعمل – Clinic &amp; Lab Tracking
-          </div>
-        </div>
-        <div class="pill" id="user-pill" style="display:none">
-          👩‍⚕️ <span id="user-name-pill">User</span>
-        </div>
-      </div>
+
+<div class="app-shell">
+  <header>
+    <div class="title-block">
+      <h1>DSA Lab System 💚</h1>
+      <small>إدارة تدفّق الحالات بين العيادة والمعمل – Developed by Wedad Aljabari</small>
     </div>
-
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="card">
-      <h2>تسجيل الدخول / Login</h2>
-      <p class="tagline">
-        يا مرحبا 🤍 جاهزين نشوف النظام؟  
-        <small>Welcome! Please sign in to start managing lab cases.</small>
-      </p>
-
-      <label>اسم المستخدم / Username</label>
-      <input id="login-username" placeholder="مثال: Wedad" />
-
-      <label>كلمة المرور / Password</label>
-      <input id="login-password" type="password" placeholder="••••••" />
-
-      <button class="btn btn-primary" id="login-btn">
-        دخول / Login
-      </button>
-
-      <div class="muted">
-        (مؤقتًا) كلمة المرور الموحدة: <b>dsa1234</b> – يمكن تغييرها لاحقًا من الإعدادات.
-      </div>
-      <div id="login-message" class="error" style="display:none"></div>
+    <div class="user-info" id="userInfo">
+      <strong id="userNameHeader">غير مسجّل</strong>
+      <span id="userRoleHeader">—</span>
     </div>
+  </header>
 
-    <!-- MAIN SCREEN -->
-    <div id="main-screen" class="hidden">
-      <!-- Shortcuts -->
-      <div class="card">
-        <h2>لوحة التحكم / Dashboard</h2>
-        <p class="tagline">
-          اختر ما تريد القيام به الآن  
-          <small>Choose an action to get started.</small>
-        </p>
-
-        <div class="grid">
-          <div class="shortcut-card" id="shortcut-new-case">
-            <div class="left">
-              <div class="shortcut-icon">📝</div>
-              <div>
-                تسجيل حالة جديدة  
-                <br><small>New clinic case entry</small>
-              </div>
-            </div>
-            <span>→</span>
-          </div>
-
-          <div class="shortcut-card" id="shortcut-search">
-            <div class="left">
-              <div class="shortcut-icon">🔎</div>
-              <div>
-                بحث عن حالة  
-                <br><small>Search case (file / barcode)</small>
-              </div>
-            </div>
-            <span>→</span>
-          </div>
-
-          <div class="shortcut-card">
-            <div class="left">
-              <div class="shortcut-icon">📊</div>
-              <div>
-                الإحصائيات (لاحقًا)  
-                <br><small>Statistics – coming soon</small>
-              </div>
-            </div>
-            <span>…</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- NEW CASE FROM CLINIC -->
-      <div class="card" id="new-case-card">
-        <div class="card-header">
-          <h3>📝 تسجيل حالة من العيادة / Clinic Case Entry</h3>
-          <div class="status-pill">
-            المرحلة الأولى: Entered from Clinic
-          </div>
+  <main>
+    <!-- 🔐 شاشة تسجيل الدخول -->
+    <section class="screen active" id="loginScreen">
+      <div class="centered">
+        <div class="logo-circle">DS</div>
+        <h2>تسجيل الدخول</h2>
+        <div class="subtitle">
+          يا هلا بكل أبطال المعمل 👋💚
+          <small>Welcome to DSA Lab System – please log in to continue.</small>
         </div>
 
-        <div class="grid">
-          <div>
-            <label>رقم الملف / File Number</label>
-            <input id="fileNumber" placeholder="مثال: 123456" />
-          </div>
-          <div>
-            <label>اسم المريض / Patient Name</label>
-            <input id="patientName" placeholder="Patient full name" />
-          </div>
-          <div>
-            <label>رقم العيادة / Clinic Number</label>
-            <input id="clinicNumber" placeholder="مثال: 310" />
-          </div>
-          <div>
-            <label>اسم الطبيب / Doctor Name</label>
-            <input id="doctorName" placeholder="Dr. Magdy" />
-          </div>
-          <div>
-            <label>نوع الحالة / Case Type</label>
-            <select id="caseType">
-              <option value="crown">Crown</option>
-              <option value="RPD">RPD</option>
-              <option value="PFM">PFM</option>
-              <option value="Ortho">Ortho</option>
-              <option value="Temporary">Temporary</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label>موعد المريض القادم / Next Appointment</label>
-            <input id="nextAppointment" type="date" />
-          </div>
+        <div class="field">
+          <label>اسم المستخدم <span class="label-en">Username</span></label>
+          <input id="loginName" type="text" placeholder="مثال: Wedad" />
+        </div>
+        <div class="field">
+          <label>كلمة المرور <span class="label-en">Password</span></label>
+          <input id="loginPassword" type="password" placeholder="••••" />
         </div>
 
-        <label>ملاحظة الطبيب (إن وجدت) / Doctor Note (optional)</label>
-        <textarea id="note" placeholder="Upper crown, shade A2..."></textarea>
-
-        <button class="btn btn-primary" id="save-case-btn">
-          💾 حفظ الحالة / Save Case
-        </button>
-        <button class="btn btn-outline" id="clear-case-btn">
-          مسح الحقول / Clear
+        <button class="btn btn-primary" id="loginBtn">
+          دخول إلى النظام
         </button>
 
-        <div id="save-message" class="success" style="display:none"></div>
-        <div id="save-error" class="error" style="display:none"></div>
+        <div class="helper-text">
+          كلمة مرور الفريق: <code>1234</code>  
+          كلمة مرور لوحة الأخصائية: <code>0987</code>
+        </div>
+        <div class="error-msg" id="loginError"></div>
+      </div>
+    </section>
 
-        <p class="muted">
-          عند الحفظ، يتم إنشاء:  
-          – رقم معمل تلقائي LabNumber  
-          – باركود نصي بسيط (يمكن تطويره لاحقًا إلى QR فعلي)  
-          – أول خطوة في تتبع الحالة داخل tracking 📍
-        </p>
+    <!-- 🌟 شاشة الترحيب + لوحة البطاقات -->
+    <section class="screen" id="dashboardScreen">
+
+      <div class="welcome-banner">
+        <div class="text-block">
+          <h3>يا مرحباً يا أبطال المعمل 💚</h3>
+          <p>
+            جاهزين نشوف الحالات ونرتّب اليوم؟  
+            <small>Ready to track your lab cases and make today full of achievements؟</small>
+          </p>
+        </div>
+        <div class="welcome-icon">📊</div>
       </div>
 
-      <!-- SEARCH CASE -->
-      <div class="card" id="search-card">
-        <h3>🔎 بحث عن حالة / Search Case</h3>
-        <div class="grid">
-          <div>
-            <label>بحث برقم الملف / File Number</label>
-            <input id="search-file" placeholder="File Number" />
-          </div>
-          <div>
-            <label>بحث بالباركود / Barcode</label>
-            <input id="search-barcode" placeholder="LAB-00001 ..." />
-          </div>
+      <div class="cards-grid">
+        <div class="card" data-section="newCaseSection">
+          <div class="card-icon">📝</div>
+          <div class="card-title-ar">تسجيل حالة جديدة</div>
+          <div class="card-title-en">New Case</div>
+          <div class="card-caption">من العيادة إلى النظام بخطوة واحدة</div>
         </div>
-        <button class="btn btn-outline" id="search-btn">بحث / Search</button>
-        <div id="search-message" class="error" style="display:none"></div>
 
-        <div id="search-result" class="card" style="margin-top:14px; display:none; background:#f9fafb;">
-          <h4>نتيجة البحث / Case Result</h4>
-          <div id="case-basic"></div>
-          <div class="timeline" id="case-timeline"></div>
+        <div class="card" data-section="labReceiveSection">
+          <div class="card-icon">🏭</div>
+          <div class="card-title-ar">استلام من المعمل</div>
+          <div class="card-title-en">Receive from Lab</div>
+          <div class="card-caption">تأكيد وصول الحالة للمعمل بالباركود</div>
+        </div>
+
+        <div class="card" data-section="searchSection">
+          <div class="card-icon">🔎</div>
+          <div class="card-title-ar">بحث عن حالة</div>
+          <div class="card-title-en">Search Case</div>
+          <div class="card-caption">بحث برقم الملف أو الباركود</div>
+        </div>
+
+        <div class="card" data-section="assistantReceiveSection">
+          <div class="card-icon">📦</div>
+          <div class="card-title-ar">استلام المساعدة</div>
+          <div class="card-title-en">Assistant Receive</div>
+          <div class="card-caption">توقيع إلكتروني وتحفيز بسيط</div>
+        </div>
+
+        <div class="card" data-section="statsSection">
+          <div class="card-icon">📊</div>
+          <div class="card-title-ar">لوحة الإحصائيات</div>
+          <div class="card-title-en">Statistics</div>
+          <div class="card-caption">للأخصائية فقط – رؤية شاملة للإنتاج</div>
+        </div>
+
+        <div class="card" data-section="rejectedSection">
+          <div class="card-icon">🗂</div>
+          <div class="card-title-ar">الحالات المرفوضة</div>
+          <div class="card-title-en">Rejected Cases</div>
+          <div class="card-caption">تم التنبيه قبل أخذ الطبعة</div>
         </div>
       </div>
 
-      <div class="card" style="margin-top:16px;">
-        <button class="btn btn-outline" id="logout-btn">تسجيل خروج / Logout</button>
+      <!-- 📝 قسم تسجيل حالة جديدة -->
+      <section class="section-panel" id="newCaseSection" style="display:none;">
+        <h3>📝 تسجيل حالة جديدة – From Clinic</h3>
+        <div class="section-subtitle">
+          نبدأ من العيادة: نضيف بيانات المريض، ينعمل رقم معمل تلقائي، وينحفظ مسار الحالة مع أول خطوة.
+        </div>
+
+        <form id="newCaseForm">
+          <div class="two-column">
+            <div class="field">
+              <label>رقم الملف <span class="label-en">File Number</span></label>
+              <input type="text" id="fileNumberInput" required />
+            </div>
+            <div class="field">
+              <label>اسم المريض <span class="label-en">Patient Name</span></label>
+              <input type="text" id="patientNameInput" required />
+            </div>
+            <div class="field">
+              <label>رقم العيادة <span class="label-en">Clinic Number</span></label>
+              <input type="text" id="clinicNumberInput" required />
+            </div>
+            <div class="field">
+              <label>اسم الطبيب <span class="label-en">Doctor Name</span></label>
+              <input type="text" id="doctorNameInput" />
+            </div>
+            <div class="field">
+              <label>نوع الحالة <span class="label-en">Case Type</span></label>
+              <select id="caseTypeInput">
+                <option value="crown">Crown / PFM</option>
+                <option value="rpd">RPD</option>
+                <option value="tm">Temporary</option>
+                <option value="ortho">Ortho</option>
+                <option value="implant">Implant</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>موعد المريض القادم <span class="label-en">Next Appointment</span></label>
+              <input type="date" id="nextAppointmentInput" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>ملاحظة الدكتور (إن وُجدت) <span class="label-en">Doctor Note</span></label>
+            <textarea id="noteInput" placeholder="مثال: Upper RPD – reline, shade A2"></textarea>
+          </div>
+
+          <div class="field">
+            <label>رابط صورة الطلب / R4 Snap (اختياري)</label>
+            <input type="url" id="imageUrlInput" placeholder="مثال: رابط صورة أو لقطة من R4" />
+          </div>
+
+          <div class="section-actions">
+            <button type="submit" class="btn btn-primary">حفظ الحالة في النظام</button>
+            <button type="button" class="btn btn-ghost" id="clearNewCaseBtn">تفريغ الحقول</button>
+          </div>
+          <div class="section-footer-note">
+            عند حفظ الحالة:
+            <span class="badge">Lab Number</span> يتولد تلقائياً،
+            ويتم إضافة أول حركة في سجل التتبع <strong>tracking</strong> بحالة:
+            <em>Entered from Clinic</em>.
+          </div>
+          <div class="error-msg" id="newCaseError"></div>
+        </form>
+      </section>
+
+      <!-- 🏭 استلام من المعمل – بسيط كبداية -->
+      <section class="section-panel" id="labReceiveSection" style="display:none;">
+        <h3>🏭 استلام الحالة في المعمل</h3>
+        <div class="section-subtitle">
+          هنا العامل/المساعدة يمسح الباركود أو يكتب رقم الملف لتأكيد وصول الحالة فعلياً للمعمل.
+        </div>
+
+        <form id="labReceiveForm">
+          <div class="two-column">
+            <div class="field">
+              <label>الباركود / كود المعمل <span class="label-en">Barcode / Lab Code</span></label>
+              <input type="text" id="barcodeReceiveInput" />
+            </div>
+            <div class="field">
+              <label>أو رقم الملف <span class="label-en">File Number</span></label>
+              <input type="text" id="fileReceiveInput" />
+            </div>
+          </div>
+          <div class="section-actions">
+            <button class="btn btn-primary" type="submit">تأكيد استلام المعمل</button>
+          </div>
+          <div class="section-footer-note">
+            النظام يضيف حركة جديدة في <strong>tracking</strong> بحالة
+            <span class="badge">Received at Lab</span>  
+            واسم المستلم يكون اسم المستخدم اللي دخل للنظام.
+          </div>
+          <div class="error-msg" id="labReceiveError"></div>
+        </form>
+      </section>
+
+      <!-- 📦 استلام المساعدة / توقيع لطيف -->
+      <section class="section-panel" id="assistantReceiveSection" style="display:none;">
+        <h3>📦 استلام المساعدة من الفني / تسليم للعيادة</h3>
+        <div class="section-subtitle">
+          هنا يتم تأكيد أن الحالة جاهزة للعيادة، مع توقيع بسيط وعبارة تحفيزية للمساعدة ✨
+        </div>
+
+        <form id="assistantReceiveForm">
+          <div class="two-column">
+            <div class="field">
+              <label>الباركود / كود المعمل</label>
+              <input type="text" id="assistantBarcodeInput" />
+            </div>
+            <div class="field">
+              <label>اسم المساعدة / الفني المستلم</label>
+              <input type="text" id="assistantNameInput" placeholder="مثال: Wedad" />
+            </div>
+          </div>
+
+          <div class="section-actions">
+            <button type="submit" class="btn btn-primary">تأكيد الاستلام للعيادة</button>
+          </div>
+          <div class="section-footer-note">
+            عند الحفظ تظهر عبارة:
+            <strong>“يعطيك العافية، خطوة جديدة تقرّبنا من ابتسامة المريض الجميلة 💚”</strong>
+          </div>
+          <div class="error-msg" id="assistantReceiveError"></div>
+        </form>
+      </section>
+
+      <!-- 🔎 بحث عن حالة -->
+      <section class="section-panel" id="searchSection" style="display:none;">
+        <h3>🔎 بحث عن حالة</h3>
+        <div class="section-subtitle">
+          بحث سريع برقم الملف، أو الباركود، ويظهر لك بيانات المريض وآخر مرحلة وصل لها.
+        </div>
+
+        <form id="searchForm">
+          <div class="two-column">
+            <div class="field">
+              <label>رقم الملف</label>
+              <input type="text" id="searchFileInput" />
+            </div>
+            <div class="field">
+              <label>الباركود</label>
+              <input type="text" id="searchBarcodeInput" />
+            </div>
+          </div>
+          <div class="section-actions">
+            <button type="submit" class="btn btn-primary">بحث</button>
+          </div>
+        </form>
+
+        <div class="results-box" id="searchResults">
+          لم يتم البحث بعد.
+        </div>
+      </section>
+
+      <!-- 📊 لوحة الإحصائيات – لأخصائية المعمل فقط -->
+      <section class="section-panel" id="statsSection" style="display:none;">
+        <h3>📊 لوحة الإحصائيات – Lab Specialist Dashboard</h3>
+        <div class="section-subtitle">
+          <span class="specialist-tag">
+            <span class="pill">Specialist Only</span>
+            دخولها يكون بكلمة المرور الخاصة <code>0987</code>.
+          </span>
+          <br />
+          هنا مستقبلاً نجمع عدد الحالات لكل قسم ولكل فني، وعدد الحالات الجارية والمكتملة.
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card">
+            <div class="muted">إجمالي الحالات المسجّلة</div>
+            <strong id="totalCasesStat">–</strong>
+          </div>
+          <div class="stat-card">
+            <div class="muted">حالات “Entered from Clinic”</div>
+            <strong id="enteredFromClinicStat">–</strong>
+          </div>
+          <div class="stat-card">
+            <div class="muted">حالات “Received at Lab”</div>
+            <strong id="receivedAtLabStat">–</strong>
+          </div>
+          <div class="stat-card">
+            <div class="muted">حالات Ready for Clinic</div>
+            <strong id="readyForClinicStat">–</strong>
+          </div>
+        </div>
+
+        <div class="section-footer-note">
+          هذه نسخة أولية، بعدين نضيف تقسيم حسب:
+          <strong>القسم / الفني / اليوم / الأسبوع</strong> مع ألوان ورسومات أكثر.
+        </div>
+      </section>
+
+      <!-- 🗂 الحالات المرفوضة – placeholder -->
+      <section class="section-panel" id="rejectedSection" style="display:none;">
+        <h3>🗂 الحالات المرفوضة</h3>
+        <div class="section-subtitle">
+          هنا لاحقاً نعرض الحالات اللي النظام يمنعها (مثل TM أو RPD أقل من ٣ أسنان)،
+          عشان العيادة تعرف قبل ما تاخذ الطبعة.
+        </div>
         <div class="muted">
-          © 2025 – جميع حقوق النظام محفوظة لـ <b>Wedad Aljabari</b>.  
-          All rights reserved to Wedad Aljabari – DSA Lab System.
+          حالياً مجرد مكان جاهز، بعد ما نربط قواعد الرفض نعرضها هنا تلقائياً.
         </div>
-      </div>
-    </div>
+      </section>
+
+    </section>
+  </main>
+</div>
+
+<!-- زر الإعدادات السري -->
+<div class="settings-button">
+  <div class="settings-chip" id="settingsBtn">
+    <span class="icon">⚙️</span>
+    <span>الإعدادات / Settings</span>
   </div>
+</div>
 
-  <!-- Firebase + App Logic -->
-  <script type="module">
-    // =========================
-    // 1) Firebase imports
-    // =========================
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      doc,
-      getDoc,
-      getDocs,
-      query,
-      where,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+<!-- Firebase + منطق الجافاسكربت -->
+<script type="module">
+  // ✅ 1) استيراد Firebase من CDN (تأكدي من رقم الإصدار إن لزم)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // =========================
-    // 2) Firebase config (من حسابك)
-    // =========================
-    const firebaseConfig = {
-      apiKey: "AIzaSyARQRegsdUi6hO_p6txm1XjnAV45cAU4Ac",
-      authDomain: "dsa-lab-system.firebaseapp.com",
-      projectId: "dsa-lab-system",
-      storageBucket: "dsa-lab-system.firebasestorage.app",
-      messagingSenderId: "1081285804674",
-      appId: "1:1081285804674:web:91e4775b7bfa5e60366a9b",
-      measurementId: "G-271TRGHNVJ"
-    };
+  // ✅ 2) إعدادات مشروعك – استبدلي بما نسختِه من Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyARQRegsdUi6hO_p6txm1XjnAV45cAU4Ac",
+    authDomain: "dsa-lab-system.firebaseapp.com",
+    projectId: "dsa-lab-system",
+    storageBucket: "dsa-lab-system.firebasestorage.app",
+    messagingSenderId: "1081285804674",
+    appId: "1:1081285804674:web:91e4775b7bfa5e60366a9b",
+    measurementId: "G-271TRGHNVJ"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    // =========================
-    // 3) Simple login
-    // =========================
-    const loginScreen = document.getElementById("login-screen");
-    const mainScreen  = document.getElementById("main-screen");
-    const loginBtn    = document.getElementById("login-btn");
-    const loginMsg    = document.getElementById("login-message");
-    const userPill    = document.getElementById("user-pill");
-    const userNamePill= document.getElementById("user-name-pill");
+  // 🔐 إعدادات الدخول
+  const NORMAL_PASSWORD = "1234";
+  const SPECIALIST_PASSWORD = "0987";
+  const SETTINGS_PASSWORD = "3333";
 
-    const PASSWORD = "dsa1234"; // مؤقت – نعدله لاحقًا ونضيف مستوى ثاني للإحصائيات
+  let currentUser = {
+    name: null,
+    role: null // "team" أو "specialist"
+  };
 
-    loginBtn.addEventListener("click", () => {
-      const user = document.getElementById("login-username").value.trim();
-      const pass = document.getElementById("login-password").value.trim();
-      loginMsg.style.display = "none";
+  // عناصر DOM أساسية
+  const loginScreen = document.getElementById("loginScreen");
+  const dashboardScreen = document.getElementById("dashboardScreen");
+  const loginBtn = document.getElementById("loginBtn");
+  const loginName = document.getElementById("loginName");
+  const loginPassword = document.getElementById("loginPassword");
+  const loginError = document.getElementById("loginError");
+  const userNameHeader = document.getElementById("userNameHeader");
+  const userRoleHeader = document.getElementById("userRoleHeader");
 
-      if (!user || !pass) {
-        loginMsg.textContent = "رجاءً أدخل اسم المستخدم وكلمة المرور.";
-        loginMsg.style.display = "block";
-        return;
-      }
-      if (pass !== PASSWORD) {
-        loginMsg.textContent = "كلمة المرور غير صحيحة.";
-        loginMsg.style.display = "block";
-        return;
-      }
+  function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
 
-      // نجاح
-      loginScreen.classList.add("hidden");
-      mainScreen.classList.remove("hidden");
-      userPill.style.display = "inline-flex";
-      userNamePill.textContent = user.toUpperCase();
-    });
+  function setUserHeader() {
+    userNameHeader.textContent = currentUser.name ? currentUser.name.toUpperCase() : "غير مسجّل";
+    if (!currentUser.role) {
+      userRoleHeader.textContent = "—";
+    } else if (currentUser.role === "specialist") {
+      userRoleHeader.textContent = "Lab Specialist – لوحة كاملة للإحصائيات 💚";
+    } else {
+      userRoleHeader.textContent = "Team Member – معا نخلي النظام مرتب 🌿";
+    }
+  }
 
-    document.getElementById("logout-btn").addEventListener("click", () => {
-      mainScreen.classList.add("hidden");
-      loginScreen.classList.remove("hidden");
-    });
+  // 🔐 تسجيل الدخول
+  loginBtn.addEventListener("click", () => {
+    const name = loginName.value.trim() || "Guest";
+    const pass = loginPassword.value.trim();
 
-    // Shortcuts scroll
-    document.getElementById("shortcut-new-case").addEventListener("click", () => {
-      document.getElementById("new-case-card").scrollIntoView({ behavior: "smooth" });
-    });
-    document.getElementById("shortcut-search").addEventListener("click", () => {
-      document.getElementById("search-card").scrollIntoView({ behavior: "smooth" });
-    });
-
-    // =========================
-    // 4) Save new case
-    // =========================
-    const saveBtn = document.getElementById("save-case-btn");
-    const clearBtn = document.getElementById("clear-case-btn");
-    const saveMsg = document.getElementById("save-message");
-    const saveErr = document.getElementById("save-error");
-
-    function clearForm() {
-      document.getElementById("fileNumber").value = "";
-      document.getElementById("patientName").value = "";
-      document.getElementById("clinicNumber").value = "";
-      document.getElementById("doctorName").value = "";
-      document.getElementById("caseType").value = "crown";
-      document.getElementById("nextAppointment").value = "";
-      document.getElementById("note").value = "";
+    if (!pass) {
+      loginError.textContent = "فضلاً أدخلي كلمة المرور.";
+      return;
     }
 
-    clearBtn.addEventListener("click", clearForm);
+    if (pass === SPECIALIST_PASSWORD) {
+      currentUser = { name, role: "specialist" };
+      loginError.textContent = "";
+      setUserHeader();
+      showScreen("dashboardScreen");
+      alert("يا مرحبا بالأخصائية 🌟 جاهزين نشوف الإحصائيات؟");
+    } else if (pass === NORMAL_PASSWORD) {
+      currentUser = { name, role: "team" };
+      loginError.textContent = "";
+      setUserHeader();
+      showScreen("dashboardScreen");
+      alert("دخول ناجح 💚 يوم مليان إنجاز بإذن الله.");
+    } else {
+      loginError.textContent = "كلمة المرور غير صحيحة.";
+    }
+  });
 
-    saveBtn.addEventListener("click", async () => {
-      saveMsg.style.display = "none";
-      saveErr.style.display = "none";
+  // 🔄 فتح الأقسام من البطاقات
+  const sectionIds = [
+    "newCaseSection",
+    "labReceiveSection",
+    "searchSection",
+    "assistantReceiveSection",
+    "statsSection",
+    "rejectedSection"
+  ];
 
-      const fileNumber      = document.getElementById("fileNumber").value.trim();
-      const patientName     = document.getElementById("patientName").value.trim();
-      const clinicNumber    = document.getElementById("clinicNumber").value.trim();
-      const doctorName      = document.getElementById("doctorName").value.trim();
-      const caseType        = document.getElementById("caseType").value;
-      const nextAppointment = document.getElementById("nextAppointment").value;
-      const note            = document.getElementById("note").value.trim();
+  function showSection(id) {
+    sectionIds.forEach(secId => {
+      document.getElementById(secId).style.display = (secId === id) ? "block" : "none";
+    });
 
-      if (!fileNumber || !patientName || !clinicNumber || !doctorName) {
-        saveErr.textContent = "رجاءً عبّي الحقول الأساسية (رقم الملف، اسم المريض، رقم العيادة، اسم الطبيب).";
-        saveErr.style.display = "block";
+    // لو فتحنا لوحة الإحصائيات – نحدّث الأرقام
+    if (id === "statsSection") {
+      loadStats();
+    }
+  }
+
+  document.querySelectorAll(".card[data-section]").forEach(card => {
+    card.addEventListener("click", () => {
+      const id = card.getAttribute("data-section");
+      if (id === "statsSection" && currentUser.role !== "specialist") {
+        alert("لوحة الإحصائيات للأخصائية فقط (دخول بكلمة 0987).");
+        return;
+      }
+      showSection(id);
+    });
+  });
+
+  // 📝 حفظ حالة جديدة في cases + tracking
+  const newCaseForm = document.getElementById("newCaseForm");
+  const newCaseError = document.getElementById("newCaseError");
+  const clearNewCaseBtn = document.getElementById("clearNewCaseBtn");
+
+  clearNewCaseBtn.addEventListener("click", () => {
+    newCaseForm.reset();
+    newCaseError.textContent = "";
+  });
+
+  newCaseForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    newCaseError.textContent = "";
+
+    const fileNumber = document.getElementById("fileNumberInput").value.trim();
+    const patientName = document.getElementById("patientNameInput").value.trim();
+    const clinicNumber = document.getElementById("clinicNumberInput").value.trim();
+    const doctorName = document.getElementById("doctorNameInput").value.trim();
+    const caseType = document.getElementById("caseTypeInput").value;
+    const nextAppointment = document.getElementById("nextAppointmentInput").value;
+    const note = document.getElementById("noteInput").value.trim();
+    const imageUrl = document.getElementById("imageUrlInput").value.trim();
+
+    if (!fileNumber || !patientName || !clinicNumber) {
+      newCaseError.textContent = "رقم الملف، اسم المريض، ورقم العيادة حقول أساسية.";
+      return;
+    }
+
+    const labNumber = "LAB-" + Date.now().toString().slice(-6);
+    const barcode = labNumber; // مبدئياً نخلي الباركود نفس رقم المعمل
+
+    try {
+      // إضافة في مجموعة cases
+      const caseRef = await addDoc(collection(db, "cases"), {
+        fileNumber,
+        patientName,
+        clinicNumber,
+        doctorName,
+        caseType,
+        nextAppointment: nextAppointment || null,
+        note: note || "",
+        createdAt: serverTimestamp(),
+        labNumber,
+        barcode,
+        createdBy: currentUser.name || "Clinic Reception"
+      });
+
+      // أول حركة في tracking
+      await addDoc(collection(caseRef, "tracking"), {
+        status: "Entered from Clinic",
+        updatedBy: currentUser.name || "Clinic Reception",
+        time: serverTimestamp(),
+        note: "Case added to system"
+      });
+
+      alert("تم حفظ الحالة بنجاح 🎉\nLab Number / Barcode: " + labNumber);
+      newCaseForm.reset();
+    } catch (err) {
+      console.error(err);
+      newCaseError.textContent = "حصل خطأ أثناء الحفظ. تأكدي من الاتصال بالإنترنت.";
+    }
+  });
+
+  // 🏭 استلام المعمل – نحدّث tracking فقط (البحث بسيط على fileNumber)
+  const labReceiveForm = document.getElementById("labReceiveForm");
+  const labReceiveError = document.getElementById("labReceiveError");
+
+  labReceiveForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    labReceiveError.textContent = "";
+
+    const barcode = document.getElementById("barcodeReceiveInput").value.trim();
+    const fileNo = document.getElementById("fileReceiveInput").value.trim();
+
+    if (!barcode && !fileNo) {
+      labReceiveError.textContent = "فضلاً أدخلي الباركود أو رقم الملف.";
+      return;
+    }
+
+    try {
+      let q;
+      if (barcode) {
+        q = query(collection(db, "cases"), where("barcode", "==", barcode));
+      } else {
+        q = query(collection(db, "cases"), where("fileNumber", "==", fileNo));
+      }
+
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        labReceiveError.textContent = "لم يتم العثور على حالة مطابقة.";
         return;
       }
 
-      try {
-        // رقم معمل بسيط + باركود نصي
-        const labNumber = "LAB-" + Math.floor(100000 + Math.random() * 900000);
-        const barcode   = labNumber + "-" + fileNumber;
+      const caseDoc = snap.docs[0];
+      await addDoc(collection(caseDoc.ref, "tracking"), {
+        status: "Received at Lab",
+        updatedBy: currentUser.name || "Lab Receiver",
+        time: serverTimestamp(),
+        note: "Case checked-in at lab"
+      });
 
-        // 1) إنشاء case في مجموعة cases
-        const caseRef = await addDoc(collection(db, "cases"), {
-          fileNumber,
-          patientName,
-          clinicNumber,
-          doctorName,
-          caseType,
-          nextAppointment: nextAppointment || null,
-          note: note || null,
-          status: "Entered from Clinic",
-          labNumber,
-          barcode,
-          createdAt: serverTimestamp()
-        });
+      alert("تم تأكيد وصول الحالة للمعمل ✅");
+      labReceiveForm.reset();
+    } catch (err) {
+      console.error(err);
+      labReceiveError.textContent = "خطأ أثناء التحديث. جرّبي مرة أخرى.";
+    }
+  });
 
-        // 2) أول خطوة في tracking
-        await addDoc(collection(db, "cases", caseRef.id, "tracking"), {
-          status: "Entered from Clinic",
-          updatedBy: "Clinic Reception",
-          time: serverTimestamp(),
-          note: "Case added to system"
-        });
+  // 📦 استلام المساعدة من الفني / جاهزة للعيادة
+  const assistantReceiveForm = document.getElementById("assistantReceiveForm");
+  const assistantReceiveError = document.getElementById("assistantReceiveError");
 
-        saveMsg.textContent = `تم حفظ الحالة بنجاح ✅ – رقم المعمل: ${labNumber}`;
-        saveMsg.style.display = "block";
-        clearForm();
-      } catch (err) {
-        console.error(err);
-        saveErr.textContent = "حدث خطأ أثناء حفظ الحالة. تأكد من الاتصال بالإنترنت ثم حاولي مرة أخرى.";
-        saveErr.style.display = "block";
-      }
-    });
+  assistantReceiveForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    assistantReceiveError.textContent = "";
 
-    // =========================
-    // 5) Search case
-    // =========================
-    const searchBtn   = document.getElementById("search-btn");
-    const searchMsg   = document.getElementById("search-message");
-    const searchRes   = document.getElementById("search-result");
-    const caseBasic   = document.getElementById("case-basic");
-    const caseTimeline= document.getElementById("case-timeline");
+    const barcode = document.getElementById("assistantBarcodeInput").value.trim();
+    const assistantName = document.getElementById("assistantNameInput").value.trim() || currentUser.name || "Assistant";
 
-    searchBtn.addEventListener("click", async () => {
-      searchMsg.style.display = "none";
-      searchRes.style.display = "none";
-      caseBasic.innerHTML = "";
-      caseTimeline.innerHTML = "";
+    if (!barcode) {
+      assistantReceiveError.textContent = "فضلاً أدخلي الباركود.";
+      return;
+    }
 
-      const fileSearch = document.getElementById("search-file").value.trim();
-      const barcodeSearch = document.getElementById("search-barcode").value.trim();
+    try {
+      const q = query(collection(db, "cases"), where("barcode", "==", barcode));
+      const snap = await getDocs(q);
 
-      if (!fileSearch && !barcodeSearch) {
-        searchMsg.textContent = "أدخلي رقم ملف أو باركود للبحث.";
-        searchMsg.style.display = "block";
+      if (snap.empty) {
+        assistantReceiveError.textContent = "لم يتم العثور على حالة بهذا الباركود.";
         return;
       }
 
-      try {
-        // نحدد نوع البحث
-        let q;
-        if (fileSearch) {
-          q = query(collection(db, "cases"), where("fileNumber", "==", fileSearch));
-        } else {
-          q = query(collection(db, "cases"), where("barcode", "==", barcodeSearch));
-        }
+      const caseDoc = snap.docs[0];
+      await addDoc(collection(caseDoc.ref, "tracking"), {
+        status: "Ready for Clinic",
+        updatedBy: assistantName,
+        time: serverTimestamp(),
+        note: "Case delivered from lab to clinic"
+      });
 
-        const snapshot = await getDocs(q);
-        if (snapshot.empty) {
-          searchMsg.textContent = "لا توجد حالة مطابقة.";
-          searchMsg.style.display = "block";
-          return;
-        }
+      alert("يعطيك العافية 🤍💚 خطوة جديدة تقرّبنا من ابتسامة المريض الجميلة.");
+      assistantReceiveForm.reset();
+    } catch (err) {
+      console.error(err);
+      assistantReceiveError.textContent = "خطأ أثناء التحديث.";
+    }
+  });
 
-        // أول نتيجة
-        const caseDoc = snapshot.docs[0];
-        const data = caseDoc.data();
+  // 🔎 بحث عن حالة – عرض بسيط للمعلومات والحركات
+  const searchForm = document.getElementById("searchForm");
+  const searchResults = document.getElementById("searchResults");
 
-        caseBasic.innerHTML = `
-          <div><b>المريض:</b> ${data.patientName} (${data.fileNumber})</div>
-          <div><b>العيادة:</b> ${data.clinicNumber} – <b>الطبيب:</b> ${data.doctorName}</div>
-          <div><b>نوع الحالة:</b> ${data.caseType} – <b>Lab#</b> ${data.labNumber}</div>
-          <div><b>الباركود:</b> ${data.barcode}</div>
-          <div><b>الحالة الحالية:</b> ${data.status}</div>
-        `;
+  searchForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    searchResults.textContent = "جاري البحث ...";
 
-        // قراءة tracking
-        const trackingSnap = await getDocs(collection(db, "cases", caseDoc.id, "tracking"));
-        let timelineHtml = "";
-        trackingSnap.forEach(tr => {
-          const t = tr.data();
-          const time = t.time?.toDate ? t.time.toDate() : null;
-          const timeStr = time ? time.toLocaleString() : "";
-          timelineHtml += `
-            <div class="timeline-item">
-              <b>${t.status}</b>
-              <span>– ${t.updatedBy || ""}</span>
-              <span>${timeStr ? " – " + timeStr : ""}</span>
-              ${t.note ? `<div class="muted">${t.note}</div>` : ""}
-            </div>
-          `;
-        });
+    const fileNo = document.getElementById("searchFileInput").value.trim();
+    const barcode = document.getElementById("searchBarcodeInput").value.trim();
 
-        caseTimeline.innerHTML = timelineHtml || "<div class='muted'>لا يوجد تتبع حتى الآن.</div>";
-        searchRes.style.display = "block";
+    if (!fileNo && !barcode) {
+      searchResults.textContent = "فضلاً أدخلي رقم الملف أو الباركود.";
+      return;
+    }
 
-      } catch (err) {
-        console.error(err);
-        searchMsg.textContent = "حدث خطأ أثناء البحث.";
-        searchMsg.style.display = "block";
+    try {
+      let q;
+      if (barcode) {
+        q = query(collection(db, "cases"), where("barcode", "==", barcode));
+      } else {
+        q = query(collection(db, "cases"), where("fileNumber", "==", fileNo));
       }
-    });
-  </script>
+
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        searchResults.textContent = "لا توجد حالة مطابقة للبيانات المدخلة.";
+        return;
+      }
+
+      const caseDoc = snap.docs[0];
+      const data = caseDoc.data();
+
+      // نجيب حركات التتبع
+      const trackSnap = await getDocs(collection(caseDoc.ref, "tracking"));
+      const tracks = [];
+      trackSnap.forEach(d => {
+        tracks.push({ id: d.id, ...d.data() });
+      });
+      tracks.sort((a,b) => (a.time?.seconds || 0) - (b.time?.seconds || 0));
+
+      let html = "";
+      html += `<div><strong>المريض:</strong> ${data.patientName || "-"} <br />`;
+      html += `<strong>رقم الملف:</strong> ${data.fileNumber || "-"}<br />`;
+      html += `<strong>رقم المعمل / الباركود:</strong> ${data.labNumber || data.barcode || "-"}<br />`;
+      html += `<strong>العيادة:</strong> ${data.clinicNumber || "-"} – <strong>الطبيب:</strong> ${data.doctorName || "-"}<br />`;
+      html += `<strong>نوع الحالة:</strong> ${data.caseType || "-"}<br />`;
+      if (data.nextAppointment) {
+        html += `<strong>موعد المريض القادم:</strong> ${data.nextAppointment}<br />`;
+      }
+      if (data.note) {
+        html += `<strong>ملاحظة:</strong> ${data.note}<br />`;
+      }
+      html += `</div><hr />`;
+
+      html += `<div><strong>مسار الحالة (Tracking):</strong><br />`;
+      if (!tracks.length) {
+        html += `<span class="muted">لا توجد حركات حتى الآن.</span>`;
+      } else {
+        html += `<ul style="padding-right:18px; margin-top:6px;">`;
+        for (const t of tracks) {
+          const dateStr = t.time?.toDate ? t.time.toDate().toLocaleString() : "-";
+          html += `<li><span class="badge gray">${t.status}</span> بواسطة ${t.updatedBy || "-"} – <span class="muted">${dateStr}</span>`;
+          if (t.note) html += `<br /><span class="muted">${t.note}</span>`;
+          html += `</li>`;
+        }
+        html += `</ul>`;
+      }
+      html += `</div>`;
+
+      searchResults.innerHTML = html;
+    } catch (err) {
+      console.error(err);
+      searchResults.textContent = "حصل خطأ أثناء البحث.";
+    }
+  });
+
+  // 📊 إحصائيات بسيطة مبدئية
+  async function loadStats() {
+    if (currentUser.role !== "specialist") return;
+
+    try {
+      const snap = await getDocs(collection(db, "cases"));
+      const allCases = [];
+      snap.forEach(d => allCases.push({ id: d.id, ...d.data() }));
+
+      document.getElementById("totalCasesStat").textContent = allCases.length.toString();
+
+      // نحتاج تمر على كل tracking
+      let entered = 0, received = 0, ready = 0;
+      for (const c of snap.docs) {
+        const trSnap = await getDocs(collection(c.ref, "tracking"));
+        trSnap.forEach(t => {
+          const status = t.data().status;
+          if (status === "Entered from Clinic") entered++;
+          if (status === "Received at Lab") received++;
+          if (status === "Ready for Clinic") ready++;
+        });
+      }
+
+      document.getElementById("enteredFromClinicStat").textContent = entered.toString();
+      document.getElementById("receivedAtLabStat").textContent = received.toString();
+      document.getElementById("readyForClinicStat").textContent = ready.toString();
+    } catch (err) {
+      console.error(err);
+      alert("تعذر تحميل الإحصائيات حالياً.");
+    }
+  }
+
+  // ⚙️ زر الإعدادات – برقم سري بسيط (لاحقاً نضيف إعدادات فنية)
+  document.getElementById("settingsBtn").addEventListener("click", () => {
+    const pwd = prompt("أدخلي كلمة مرور الإعدادات:");
+    if (pwd === SETTINGS_PASSWORD) {
+      alert("إعدادات قيد التطوير 🔧✨ (حالياً فقط حماية بسيطة للزر).");
+    } else if (pwd !== null) {
+      alert("كلمة مرور الإعدادات غير صحيحة.");
+    }
+  });
+
+  // لراحة المستخدم – Enter يعمل دخول
+  loginPassword.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") loginBtn.click();
+  });
+</script>
+
 </body>
 </html>
