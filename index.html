@@ -1,94 +1,86 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSA Lab System</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background:#f2f2f2;
-            text-align:center;
-            padding-top:50px;
-        }
-        #loginBox {
-            background:white;
-            width:300px;
-            padding:20px;
-            margin:auto;
-            border-radius:10px;
-            box-shadow:0 0 10px rgba(0,0,0,0.2);
-        }
-        input {
-            width:90%;
-            padding:10px;
-            margin:10px 0;
-            border:1px solid #ccc;
-            border-radius:5px;
-        }
-        button {
-            width:95%;
-            padding:10px;
-            background:#4CAF50;
-            color:white;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
-        }
-        #homePage {
-            display:none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>DSA Lab System</title>
+  <style>
+    body {
+      font-family: "Tajawal", sans-serif;
+      background: #f5f5f5;
+      text-align: center;
+      padding-top: 100px;
+    }
+    .card {
+      background: white;
+      width: 350px;
+      padding: 25px;
+      margin: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    input{
+      width: 90%;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+      font-size: 16px;
+    }
+    button {
+      width: 95%;
+      padding: 10px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #43a047;
+    }
+  </style>
 </head>
 
 <body>
 
-    <div id="loginBox">
-        <h2>تسجيل الدخول</h2>
-        <input type="text" id="username" placeholder="اسم المستخدم">
-        <input type="password" id="password" placeholder="كلمة المرور">
-        <button onclick="login()">دخول</button>
-    </div>
-
-    <div id="homePage">
-        <h1 id="welcomeTitle"></h1>
-        <p id="roleText"></p>
-        <p id="motivationText"></p>
-        <button onclick="logout()">تسجيل خروج</button>
-    </div>
+<div class="card">
+  <h2>تسجيل الدخول</h2>
+  <input type="text" id="username" placeholder="اسم المستخدم">
+  <input type="password" id="password" placeholder="كلمة المرور">
+  <button onclick="login()">دخول</button>
+</div>
 
 <script>
 
-const users = {
-    "wedad":   { pass:"1234", role:"مديرة المعمل", msg:"أهلاً بعودتك يا قائدة المعمل 💚" },
-    "hanan":   { pass:"5678", role:"فنية", msg:"يوم جديد وإنجاز جديد يا حنان ✨" },
-    "majed":   { pass:"9999", role:"طبيب", msg:"نورت يا دكتور 🌟" }
+// حساب الإحصائيات
+const adminUser = {
+  username: "wedad",
+  password: "0000"
 };
 
+// الرقم السري العام للكل
+const generalPassword = "1234";
+
 function login() {
-    let user = document.getElementById("username").value.toLowerCase();
-    let pass = document.getElementById("password").value;
+  let user = document.getElementById("username").value.trim().toLowerCase();
+  let pass = document.getElementById("password").value.trim();
 
-    if (users[user] && users[user].pass === pass) {
+  // تسجيل دخول الإحصائيات
+  if (user === adminUser.username && pass === adminUser.password) {
+      alert("✔ تم الدخول: صفحة الإحصائيات");
+      return;
+  }
 
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("homePage").style.display = "block";
+  // دخول عام
+  if (pass === generalPassword) {
+      alert("✔ دخول ناجح");
+      return;
+  }
 
-        document.getElementById("welcomeTitle").innerText = "مرحبا " + user.toUpperCase();
-        document.getElementById("roleText").innerText = "Role: " + users[user].role;
-        document.getElementById("motivationText").innerText = users[user].msg;
-
-    } else {
-        alert("البيانات غير صحيحة");
-    }
-}
-
-function logout() {
-    document.getElementById("homePage").style.display = "none";
-    document.getElementById("loginBox").style.display = "block";
-
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
+  // بيانات خطأ
+  alert("❌ البيانات غير صحيحة");
 }
 
 </script>
