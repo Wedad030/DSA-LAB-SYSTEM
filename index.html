@@ -1,1190 +1,1842 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>DSA Lab System – Wedad</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --green-main: #4caf6a;
-      --green-light: #e7f7ee;
-      --green-dark: #2f7b48;
-      --bg: #f5f7fa;
-      --card-radius: 16px;
-      --shadow-soft: 0 10px 25px rgba(0,0,0,0.08);
-      --transition: 0.25s ease;
-      --danger: #ff5252;
-      --gray: #888;
-      --font-ar: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DSA LAB SYSTEM - Login</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #d9f7e9, #ffffff);
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 90px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: #0f9d58;
+        }
+
+        p {
+            margin-top: -5px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        label {
+            display: block;
+            text-align: right;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #0f9d58;
+        }
+
+        button {
+            margin-top: 22px;
+            width: 100%;
+            padding: 11px;
+            background: #0f9d58;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0c7c45;
+        }
+
+        #error {
+            margin-top: 15px;
+            color: red;
+            font-size: 13px;
+            display: none;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 11px;
+            color: #777;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>DSA LAB SYSTEM</h2>
+        <p>نظام متابعة معمل الأسنان</p>
+
+        <label>اسم المستخدم / Username</label>
+        <input id="username" type="text" placeholder="مثال: Wedad" />
+
+        <label>كلمة المرور / Password</label>
+        <input id="password" type="password" placeholder="••••••" />
+
+        <button onclick="login()">دخول / Login</button>
+
+        <div id="error">بيانات الدخول غير صحيحة ❌</div>
+
+        <div class="footer">
+            Powered by Wedad © 2025 – All Rights Reserved
+        </div>
+    </div>
+
+<script>
+function login() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+    const errorBox = document.getElementById("error");
+
+    // كلمات المرور
+    const NORMAL_PASSWORD = "1234";
+    const SPECIALIST_PASSWORD = "0987";
+
+    if (user === "" || pass === "") {
+        errorBox.innerText = "الرجاء إدخال جميع البيانات ❗";
+        errorBox.style.display = "block";
+        return;
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: var(--font-ar);
+    if (pass === NORMAL_PASSWORD || pass === SPECIALIST_PASSWORD) {
+        // إعادة توجيه للصفحة التالية
+        window.location.href = "dashboard.html";
+    } else {
+        errorBox.innerText = "بيانات الدخول غير صحيحة ❌";
+        errorBox.style.display = "block";
     }
+}
+</script>
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DSA LAB SYSTEM - Dashboard</title>
 
-    body {
-      margin: 0;
-      background: radial-gradient(circle at top left, #f0fff7 0, #f5f7fa 40%, #eaf5ff 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
-      color: #222;
-    }
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background: linear-gradient(135deg, #e9f7ef, #ffffff);
+        }
 
-    .app-shell {
-      width: 100%;
-      max-width: 1200px;
-      margin: 16px;
-      background: rgba(255,255,255,0.96);
-      border-radius: 24px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.1);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
+        .topbar {
+            background: #0f9d58;
+            color: white;
+            padding: 15px;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+        }
 
-    header {
-      padding: 16px 24px;
-      border-bottom: 1px solid #edf2f7;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      background: linear-gradient(90deg, var(--green-main), #7bd389);
-      color: #fff;
-    }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 15px;
+        }
 
-    header .title-block {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
 
-    header h1 {
-      margin: 0;
-      font-size: 1.4rem;
-      letter-spacing: 0.03em;
-    }
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 14px;
+            text-align: center;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+            transition: 0.2s;
+        }
 
-    header small {
-      opacity: 0.9;
-      font-size: 0.8rem;
-    }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+        }
 
-    header .user-info {
-      text-align: left;
-      font-size: 0.8rem;
-    }
+        .icon {
+            font-size: 38px;
+            margin-bottom: 10px;
+            color: #0f9d58;
+        }
 
-    header .user-info strong {
-      display: block;
-      font-size: 0.9rem;
-    }
+        .logout {
+            text-align: center;
+            margin-top: 35px;
+        }
 
-    main {
-      padding: 20px;
-      overflow: auto;
-      flex: 1;
-    }
+        .logout button {
+            padding: 10px 22px;
+            background: #d9534f;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
 
-    /* ---------- login ---------- */
-    .screen {
-      display: none;
-      animation: fadeIn 0.25s ease;
-    }
-    .screen.active {
-      display: block;
-    }
+        .logout button:hover {
+            background: #b94440;
+        }
 
-    .centered {
-      max-width: 420px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 28px 24px 26px;
-      border-radius: 20px;
-      box-shadow: var(--shadow-soft);
-      text-align: center;
-    }
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: #777;
+            margin-top: 30px;
+        }
+    </style>
+</head>
 
-    .logo-circle {
-      width: 62px;
-      height: 62px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--green-main), var(--green-dark));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 700;
-      font-size: 1.4rem;
-      margin: 0 auto 10px;
-    }
+<body>
 
-    h2 {
-      margin: 6px 0 10px;
-      font-size: 1.3rem;
-    }
+    <div class="topbar">
+        DSA LAB SYSTEM – Dashboard
+    </div>
 
-    .subtitle {
-      font-size: 0.9rem;
-      color: var(--gray);
-      margin-bottom: 14px;
-    }
+    <div class="container">
 
-    .subtitle small {
-      display: block;
-      font-size: 0.82rem;
-    }
+        <div class="grid">
 
-    .field {
-      text-align: right;
-      margin-bottom: 10px;
-    }
+            <!-- تسجيل حالة جديدة -->
+            <div class="card" onclick="location.href='clinic-entry.html'">
+                <div class="icon">📝</div>
+                إضافة حالة جديدة  
+                <br><small>New Case Entry</small>
+            </div>
 
-    .field label {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 0.85rem;
-      color: #444;
-    }
+            <!-- استلام من المعمل -->
+            <div class="card" onclick="location.href='lab-check-in.html'">
+                <div class="icon">🏭</div>
+                استلام من المعمل  
+                <br><small>Lab Check-In</small>
+            </div>
 
-    .field input, .field select, .field textarea {
-      width: 100%;
-      padding: 9px 10px;
-      border-radius: 10px;
-      border: 1px solid #d1d9e6;
-      outline: none;
-      font-size: 0.9rem;
-      transition: var(--transition);
-      background: #fbfcff;
-    }
+            <!-- توزيع الفنيين -->
+            <div class="card" onclick="location.href='technician.html'">
+                <div class="icon">👨🏻‍🔧</div>
+                شاشة الفنيين  
+                <br><small>Technician Panel</small>
+            </div>
 
-    .field input:focus, .field select:focus, .field textarea:focus {
-      border-color: var(--green-main);
-      box-shadow: 0 0 0 2px rgba(76,175,106,0.18);
-      background: #fff;
-    }
+            <!-- استلام المساعدة -->
+            <div class="card" onclick="location.href='assistant.html'">
+                <div class="icon">📦</div>
+                استلام المساعدة  
+                <br><small>Assistant Receipt</small>
+            </div>
 
-    .btn {
-      border: none;
-      border-radius: 999px;
-      padding: 9px 16px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: var(--transition);
-    }
+            <!-- بحث -->
+            <div class="card" onclick="location.href='search.html'">
+                <div class="icon">🔎</div>
+                بحث عن حالة  
+                <br><small>Search Case</small>
+            </div>
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--green-main), var(--green-dark));
-      color: #fff;
-      width: 100%;
-      margin-top: 4px;
-    }
+            <!-- مرفوض -->
+            <div class="card" onclick="location.href='return-cases.html'">
+                <div class="icon">⚠️</div>
+                الحالات المرفوضة  
+                <br><small>Rejected Cases</small>
+            </div>
 
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(76,175,80,0.3);
-    }
+            <!-- الإحصائيات -->
+            <div class="card" onclick="location.href='stats.html'">
+                <div class="icon">📊</div>
+                الإحصائيات  
+                <br><small>Statistics</small>
+            </div>
 
-    .btn-ghost {
-      background: transparent;
-      color: var(--green-dark);
-    }
+            <!-- الإعدادات -->
+            <div class="card" onclick="location.href='settings.html'">
+                <div class="icon">⚙️</div>
+                الإعدادات  
+                <br><small>Settings</small>
+            </div>
 
-    .helper-text {
-      font-size: 0.8rem;
-      color: var(--gray);
-      margin-top: 6px;
-    }
+        </div>
 
-    .helper-text code {
-      background: #f0f4f8;
-      padding: 1px 6px;
-      border-radius: 999px;
-      font-size: 0.76rem;
-    }
+        <div class="logout">
+            <button onclick="logout()">تسجيل خروج / Logout</button>
+        </div>
 
-    .error-msg {
-      color: var(--danger);
-      font-size: 0.8rem;
-      margin-top: 4px;
-      min-height: 16px;
-    }
+        <div class="footer">
+            © 2025 – Wedad Aljabari  
+            All Rights Reserved
+        </div>
 
-    /* --------- welcome banner --------- */
-    .welcome-banner {
-      margin-bottom: 16px;
-      padding: 14px 14px 14px 18px;
-      border-radius: 18px;
-      background: linear-gradient(120deg, var(--green-main), #7fe0a3);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
+    </div>
 
-    .welcome-banner .text-block {
-      max-width: 80%;
-    }
+<script>
+function logout() {
+    window.location.href = "index.html";
+}
+</script>
 
-    .welcome-banner h3 {
-      margin: 0 0 6px;
-      font-size: 1.1rem;
-    }
+</body>
+</html>
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinic Entry - DSA LAB SYSTEM</title>
 
-    .welcome-banner p {
-      margin: 0;
-      font-size: 0.9rem;
-    }
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background: #f4faf7;
+        }
 
-    .welcome-banner p small {
-      display: block;
-      font-size: 0.78rem;
-      opacity: 0.9;
-    }
+        .topbar {
+            background: #0f9d58;
+            color: white;
+            padding: 14px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
 
-    .welcome-icon {
-      font-size: 1.5rem;
-    }
+        .container {
+            max-width: 750px;
+            margin: 25px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+        }
 
-    /* ---------- cards dashboard ---------- */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 14px;
-    }
+        h3 {
+            margin-top: 5px;
+            color: #0f9d58;
+        }
 
-    .card {
-      background: var(--green-light);
-      border-radius: var(--card-radius);
-      padding: 14px 12px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: var(--transition);
-      border: 1px solid #cfe8da;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
 
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 24px rgba(0,0,0,0.08);
-      background: #def7ea;
-    }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+        }
 
-    .card-icon {
-      font-size: 1.3rem;
-      margin-bottom: 2px;
-    }
+        input:focus, select:focus, textarea:focus {
+            border-color: #0f9d58;
+        }
 
-    .card-title-ar {
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
+        textarea {
+            height: 70px;
+        }
 
-    .card-title-en {
-      font-size: 0.78rem;
-      color: #4d6b5b;
-    }
+        button {
+            margin-top: 22px;
+            padding: 12px 22px;
+            background: #0f9d58;
+            border: none;
+            color: white;
+            font-size: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-    .card-caption {
-      font-size: 0.78rem;
-      color: var(--gray);
-      margin-top: 2px;
-    }
+        button:hover {
+            background: #0c7c45;
+        }
 
-    /* --------- sections ---------- */
-    .section-panel {
-      margin-top: 18px;
-      padding: 16px;
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid #e1e7f0;
-    }
-    .section-panel h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 1.05rem;
-    }
-    .section-subtitle {
-      font-size: 0.82rem;
-      color: var(--gray);
-      margin-bottom: 12px;
-    }
+        .success {
+            margin-top: 15px;
+            color: #0a792c;
+            font-weight: bold;
+            display: none;
+        }
 
-    .section-actions {
-      margin-top: 12px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+        .error {
+            margin-top: 15px;
+            color: #b00020;
+            font-weight: bold;
+            display: none;
+        }
 
-    .two-column {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
-      gap: 10px 16px;
-    }
+        .back {
+            margin-top: 30px;
+            text-align: center;
+        }
 
-    .section-footer-note {
-      font-size: 0.8rem;
-      color: var(--gray);
-      margin-top: 10px;
-    }
+        .back a {
+            color: #0f9d58;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
 
-    textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
+    </style>
 
-    /* search results */
-    .results-box {
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 12px;
-      background: #f7fafc;
-      border: 1px dashed #cbd5e0;
-      font-size: 0.85rem;
-      max-height: 260px;
-      overflow: auto;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.75rem;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #e2f7ec;
-      color: #25623a;
-      margin-inline-end: 4px;
-    }
-
-    .badge.gray {
-      background: #edf2f7;
-      color: #4a5568;
-    }
-
-    .label-en {
-      font-size: 0.75rem;
-      color: #718096;
-    }
-
-    /* settings badge button */
-    .settings-button {
-      position: fixed;
-      left: 18px;
-      bottom: 18px;
-      z-index: 50;
-    }
-
-    .settings-chip {
-      background: #ffffff;
-      border-radius: 999px;
-      padding: 6px 12px;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      color: #2d3748;
-      border: 1px solid #e2e8f0;
-    }
-
-    .settings-chip span.icon {
-      width: 22px;
-      height: 22px;
-      border-radius: 999px;
-      background: var(--green-main);
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-    }
-
-    /* specialist-only tag */
-    .specialist-tag {
-      font-size: 0.76rem;
-      color: #c53030;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .pill {
-      padding: 1px 8px;
-      border-radius: 999px;
-      background: #fed7d7;
-      color: #822727;
-      font-size: 0.7rem;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .stat-card {
-      padding: 10px 10px 9px;
-      border-radius: 14px;
-      background: #f0fff4;
-      border: 1px solid #c6f6d5;
-      font-size: 0.86rem;
-    }
-
-    .stat-card strong {
-      font-size: 1.1rem;
-    }
-
-    .muted {
-      color: var(--gray);
-      font-size: 0.8rem;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 640px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .welcome-banner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .welcome-banner .text-block {
-        max-width: 100%;
-      }
-    }
-  </style>
 </head>
 <body>
 
-<div class="app-shell">
-  <header>
-    <div class="title-block">
-      <h1>DSA Lab System 💚</h1>
-      <small>إدارة تدفّق الحالات بين العيادة والمعمل – Developed by Wedad Aljabari</small>
-    </div>
-    <div class="user-info" id="userInfo">
-      <strong id="userNameHeader">غير مسجّل</strong>
-      <span id="userRoleHeader">—</span>
-    </div>
-  </header>
-
-  <main>
-    <!-- 🔐 شاشة تسجيل الدخول -->
-    <section class="screen active" id="loginScreen">
-      <div class="centered">
-        <div class="logo-circle">DS</div>
-        <h2>تسجيل الدخول</h2>
-        <div class="subtitle">
-          يا هلا بكل أبطال المعمل 👋💚
-          <small>Welcome to DSA Lab System – please log in to continue.</small>
-        </div>
-
-        <div class="field">
-          <label>اسم المستخدم <span class="label-en">Username</span></label>
-          <input id="loginName" type="text" placeholder="مثال: Wedad" />
-        </div>
-        <div class="field">
-          <label>كلمة المرور <span class="label-en">Password</span></label>
-          <input id="loginPassword" type="password" placeholder="••••" />
-        </div>
-
-        <button class="btn btn-primary" id="loginBtn">
-          دخول إلى النظام
-        </button>
-
-        <div class="helper-text">
-          كلمة مرور الفريق: <code>1234</code>  
-          كلمة مرور لوحة الأخصائية: <code>0987</code>
-        </div>
-        <div class="error-msg" id="loginError"></div>
-      </div>
-    </section>
-
-    <!-- 🌟 شاشة الترحيب + لوحة البطاقات -->
-    <section class="screen" id="dashboardScreen">
-
-      <div class="welcome-banner">
-        <div class="text-block">
-          <h3>يا مرحباً يا أبطال المعمل 💚</h3>
-          <p>
-            جاهزين نشوف الحالات ونرتّب اليوم؟  
-            <small>Ready to track your lab cases and make today full of achievements؟</small>
-          </p>
-        </div>
-        <div class="welcome-icon">📊</div>
-      </div>
-
-      <div class="cards-grid">
-        <div class="card" data-section="newCaseSection">
-          <div class="card-icon">📝</div>
-          <div class="card-title-ar">تسجيل حالة جديدة</div>
-          <div class="card-title-en">New Case</div>
-          <div class="card-caption">من العيادة إلى النظام بخطوة واحدة</div>
-        </div>
-
-        <div class="card" data-section="labReceiveSection">
-          <div class="card-icon">🏭</div>
-          <div class="card-title-ar">استلام من المعمل</div>
-          <div class="card-title-en">Receive from Lab</div>
-          <div class="card-caption">تأكيد وصول الحالة للمعمل بالباركود</div>
-        </div>
-
-        <div class="card" data-section="searchSection">
-          <div class="card-icon">🔎</div>
-          <div class="card-title-ar">بحث عن حالة</div>
-          <div class="card-title-en">Search Case</div>
-          <div class="card-caption">بحث برقم الملف أو الباركود</div>
-        </div>
-
-        <div class="card" data-section="assistantReceiveSection">
-          <div class="card-icon">📦</div>
-          <div class="card-title-ar">استلام المساعدة</div>
-          <div class="card-title-en">Assistant Receive</div>
-          <div class="card-caption">توقيع إلكتروني وتحفيز بسيط</div>
-        </div>
-
-        <div class="card" data-section="statsSection">
-          <div class="card-icon">📊</div>
-          <div class="card-title-ar">لوحة الإحصائيات</div>
-          <div class="card-title-en">Statistics</div>
-          <div class="card-caption">للأخصائية فقط – رؤية شاملة للإنتاج</div>
-        </div>
-
-        <div class="card" data-section="rejectedSection">
-          <div class="card-icon">🗂</div>
-          <div class="card-title-ar">الحالات المرفوضة</div>
-          <div class="card-title-en">Rejected Cases</div>
-          <div class="card-caption">تم التنبيه قبل أخذ الطبعة</div>
-        </div>
-      </div>
-
-      <!-- 📝 قسم تسجيل حالة جديدة -->
-      <section class="section-panel" id="newCaseSection" style="display:none;">
-        <h3>📝 تسجيل حالة جديدة – From Clinic</h3>
-        <div class="section-subtitle">
-          نبدأ من العيادة: نضيف بيانات المريض، ينعمل رقم معمل تلقائي، وينحفظ مسار الحالة مع أول خطوة.
-        </div>
-
-        <form id="newCaseForm">
-          <div class="two-column">
-            <div class="field">
-              <label>رقم الملف <span class="label-en">File Number</span></label>
-              <input type="text" id="fileNumberInput" required />
-            </div>
-            <div class="field">
-              <label>اسم المريض <span class="label-en">Patient Name</span></label>
-              <input type="text" id="patientNameInput" required />
-            </div>
-            <div class="field">
-              <label>رقم العيادة <span class="label-en">Clinic Number</span></label>
-              <input type="text" id="clinicNumberInput" required />
-            </div>
-            <div class="field">
-              <label>اسم الطبيب <span class="label-en">Doctor Name</span></label>
-              <input type="text" id="doctorNameInput" />
-            </div>
-            <div class="field">
-              <label>نوع الحالة <span class="label-en">Case Type</span></label>
-              <select id="caseTypeInput">
-                <option value="crown">Crown / PFM</option>
-                <option value="rpd">RPD</option>
-                <option value="tm">Temporary</option>
-                <option value="ortho">Ortho</option>
-                <option value="implant">Implant</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>موعد المريض القادم <span class="label-en">Next Appointment</span></label>
-              <input type="date" id="nextAppointmentInput" />
-            </div>
-          </div>
-
-          <div class="field">
-            <label>ملاحظة الدكتور (إن وُجدت) <span class="label-en">Doctor Note</span></label>
-            <textarea id="noteInput" placeholder="مثال: Upper RPD – reline, shade A2"></textarea>
-          </div>
-
-          <div class="field">
-            <label>رابط صورة الطلب / R4 Snap (اختياري)</label>
-            <input type="url" id="imageUrlInput" placeholder="مثال: رابط صورة أو لقطة من R4" />
-          </div>
-
-          <div class="section-actions">
-            <button type="submit" class="btn btn-primary">حفظ الحالة في النظام</button>
-            <button type="button" class="btn btn-ghost" id="clearNewCaseBtn">تفريغ الحقول</button>
-          </div>
-          <div class="section-footer-note">
-            عند حفظ الحالة:
-            <span class="badge">Lab Number</span> يتولد تلقائياً،
-            ويتم إضافة أول حركة في سجل التتبع <strong>tracking</strong> بحالة:
-            <em>Entered from Clinic</em>.
-          </div>
-          <div class="error-msg" id="newCaseError"></div>
-        </form>
-      </section>
-
-      <!-- 🏭 استلام من المعمل – بسيط كبداية -->
-      <section class="section-panel" id="labReceiveSection" style="display:none;">
-        <h3>🏭 استلام الحالة في المعمل</h3>
-        <div class="section-subtitle">
-          هنا العامل/المساعدة يمسح الباركود أو يكتب رقم الملف لتأكيد وصول الحالة فعلياً للمعمل.
-        </div>
-
-        <form id="labReceiveForm">
-          <div class="two-column">
-            <div class="field">
-              <label>الباركود / كود المعمل <span class="label-en">Barcode / Lab Code</span></label>
-              <input type="text" id="barcodeReceiveInput" />
-            </div>
-            <div class="field">
-              <label>أو رقم الملف <span class="label-en">File Number</span></label>
-              <input type="text" id="fileReceiveInput" />
-            </div>
-          </div>
-          <div class="section-actions">
-            <button class="btn btn-primary" type="submit">تأكيد استلام المعمل</button>
-          </div>
-          <div class="section-footer-note">
-            النظام يضيف حركة جديدة في <strong>tracking</strong> بحالة
-            <span class="badge">Received at Lab</span>  
-            واسم المستلم يكون اسم المستخدم اللي دخل للنظام.
-          </div>
-          <div class="error-msg" id="labReceiveError"></div>
-        </form>
-      </section>
-
-      <!-- 📦 استلام المساعدة / توقيع لطيف -->
-      <section class="section-panel" id="assistantReceiveSection" style="display:none;">
-        <h3>📦 استلام المساعدة من الفني / تسليم للعيادة</h3>
-        <div class="section-subtitle">
-          هنا يتم تأكيد أن الحالة جاهزة للعيادة، مع توقيع بسيط وعبارة تحفيزية للمساعدة ✨
-        </div>
-
-        <form id="assistantReceiveForm">
-          <div class="two-column">
-            <div class="field">
-              <label>الباركود / كود المعمل</label>
-              <input type="text" id="assistantBarcodeInput" />
-            </div>
-            <div class="field">
-              <label>اسم المساعدة / الفني المستلم</label>
-              <input type="text" id="assistantNameInput" placeholder="مثال: Wedad" />
-            </div>
-          </div>
-
-          <div class="section-actions">
-            <button type="submit" class="btn btn-primary">تأكيد الاستلام للعيادة</button>
-          </div>
-          <div class="section-footer-note">
-            عند الحفظ تظهر عبارة:
-            <strong>“يعطيك العافية، خطوة جديدة تقرّبنا من ابتسامة المريض الجميلة 💚”</strong>
-          </div>
-          <div class="error-msg" id="assistantReceiveError"></div>
-        </form>
-      </section>
-
-      <!-- 🔎 بحث عن حالة -->
-      <section class="section-panel" id="searchSection" style="display:none;">
-        <h3>🔎 بحث عن حالة</h3>
-        <div class="section-subtitle">
-          بحث سريع برقم الملف، أو الباركود، ويظهر لك بيانات المريض وآخر مرحلة وصل لها.
-        </div>
-
-        <form id="searchForm">
-          <div class="two-column">
-            <div class="field">
-              <label>رقم الملف</label>
-              <input type="text" id="searchFileInput" />
-            </div>
-            <div class="field">
-              <label>الباركود</label>
-              <input type="text" id="searchBarcodeInput" />
-            </div>
-          </div>
-          <div class="section-actions">
-            <button type="submit" class="btn btn-primary">بحث</button>
-          </div>
-        </form>
-
-        <div class="results-box" id="searchResults">
-          لم يتم البحث بعد.
-        </div>
-      </section>
-
-      <!-- 📊 لوحة الإحصائيات – لأخصائية المعمل فقط -->
-      <section class="section-panel" id="statsSection" style="display:none;">
-        <h3>📊 لوحة الإحصائيات – Lab Specialist Dashboard</h3>
-        <div class="section-subtitle">
-          <span class="specialist-tag">
-            <span class="pill">Specialist Only</span>
-            دخولها يكون بكلمة المرور الخاصة <code>0987</code>.
-          </span>
-          <br />
-          هنا مستقبلاً نجمع عدد الحالات لكل قسم ولكل فني، وعدد الحالات الجارية والمكتملة.
-        </div>
-
-        <div class="stats-grid" id="statsGrid">
-          <div class="stat-card">
-            <div class="muted">إجمالي الحالات المسجّلة</div>
-            <strong id="totalCasesStat">–</strong>
-          </div>
-          <div class="stat-card">
-            <div class="muted">حالات “Entered from Clinic”</div>
-            <strong id="enteredFromClinicStat">–</strong>
-          </div>
-          <div class="stat-card">
-            <div class="muted">حالات “Received at Lab”</div>
-            <strong id="receivedAtLabStat">–</strong>
-          </div>
-          <div class="stat-card">
-            <div class="muted">حالات Ready for Clinic</div>
-            <strong id="readyForClinicStat">–</strong>
-          </div>
-        </div>
-
-        <div class="section-footer-note">
-          هذه نسخة أولية، بعدين نضيف تقسيم حسب:
-          <strong>القسم / الفني / اليوم / الأسبوع</strong> مع ألوان ورسومات أكثر.
-        </div>
-      </section>
-
-      <!-- 🗂 الحالات المرفوضة – placeholder -->
-      <section class="section-panel" id="rejectedSection" style="display:none;">
-        <h3>🗂 الحالات المرفوضة</h3>
-        <div class="section-subtitle">
-          هنا لاحقاً نعرض الحالات اللي النظام يمنعها (مثل TM أو RPD أقل من ٣ أسنان)،
-          عشان العيادة تعرف قبل ما تاخذ الطبعة.
-        </div>
-        <div class="muted">
-          حالياً مجرد مكان جاهز، بعد ما نربط قواعد الرفض نعرضها هنا تلقائياً.
-        </div>
-      </section>
-
-    </section>
-  </main>
+<div class="topbar">
+    تسجيل حالة من العيادة – Clinic Entry
 </div>
 
-<!-- زر الإعدادات السري -->
-<div class="settings-button">
-  <div class="settings-chip" id="settingsBtn">
-    <span class="icon">⚙️</span>
-    <span>الإعدادات / Settings</span>
-  </div>
+<div class="container">
+
+    <h3>📝 إضافة حالة جديدة</h3>
+
+    <label>رقم الملف / File Number</label>
+    <input id="fileNumber" type="text" placeholder="123456">
+
+    <label>اسم المريض / Patient Name</label>
+    <input id="patientName" type="text" placeholder="Patient Full Name">
+
+    <label>رقم العيادة / Clinic Number</label>
+    <input id="clinicNumber" type="text" placeholder="310">
+
+    <label>اسم الطبيب / Doctor Name</label>
+    <input id="doctorName" type="text" placeholder="Dr. Magdy">
+
+    <label>نوع الحالة / Case Type</label>
+    <select id="caseType">
+        <option value="Crown">Crown</option>
+        <option value="RPD">RPD</option>
+        <option value="PFM">PFM</option>
+        <option value="Ortho">Ortho</option>
+        <option value="Temporary">Temporary</option>
+    </select>
+
+    <label>موعد المريض القادم / Next Appointment</label>
+    <input id="nextAppointment" type="date">
+
+    <label>ملاحظة الطبيب (اختياري) / Doctor Notes</label>
+    <textarea id="doctorNote" placeholder="Shade A2, Upper crown ..."></textarea>
+
+    <label>إرفاق صورة الطلب / Upload Request Image</label>
+    <input id="imageUpload" type="file" accept="image/*">
+
+    <button onclick="saveCase()">💾 حفظ الحالة / Save Case</button>
+
+    <div id="success" class="success">✔ تم حفظ الحالة بنجاح</div>
+    <div id="error" class="error"></div>
+
+    <div class="back">
+        <a href="dashboard.html">← العودة للوحة التحكم</a>
+    </div>
+
 </div>
 
-<!-- Firebase + منطق الجافاسكربت -->
-<script type="module">
-  // ✅ 1) استيراد Firebase من CDN (تأكدي من رقم الإصدار إن لزم)
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-  import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+<script>
+function saveCase() {
+    let fileNumber = document.getElementById("fileNumber").value.trim();
+    let patientName = document.getElementById("patientName").value.trim();
+    let clinicNumber = document.getElementById("clinicNumber").value.trim();
+    let doctorName = document.getElementById("doctorName").value.trim();
+    let caseType = document.getElementById("caseType").value;
+    let nextAppointment = document.getElementById("nextAppointment").value;
+    let note = document.getElementById("doctorNote").value.trim();
 
-  // ✅ 2) إعدادات مشروعك – استبدلي بما نسختِه من Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyARQRegsdUi6hO_p6txm1XjnAV45cAU4Ac",
-    authDomain: "dsa-lab-system.firebaseapp.com",
-    projectId: "dsa-lab-system",
-    storageBucket: "dsa-lab-system.firebasestorage.app",
-    messagingSenderId: "1081285804674",
-    appId: "1:1081285804674:web:91e4775b7bfa5e60366a9b",
-    measurementId: "G-271TRGHNVJ"
-  };
+    let error = document.getElementById("error");
+    let success = document.getElementById("success");
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    error.style.display = "none";
+    success.style.display = "none";
 
-  // 🔐 إعدادات الدخول
-  const NORMAL_PASSWORD = "1234";
-  const SPECIALIST_PASSWORD = "0987";
-  const SETTINGS_PASSWORD = "3333";
-
-  let currentUser = {
-    name: null,
-    role: null // "team" أو "specialist"
-  };
-
-  // عناصر DOM أساسية
-  const loginScreen = document.getElementById("loginScreen");
-  const dashboardScreen = document.getElementById("dashboardScreen");
-  const loginBtn = document.getElementById("loginBtn");
-  const loginName = document.getElementById("loginName");
-  const loginPassword = document.getElementById("loginPassword");
-  const loginError = document.getElementById("loginError");
-  const userNameHeader = document.getElementById("userNameHeader");
-  const userRoleHeader = document.getElementById("userRoleHeader");
-
-  function showScreen(id) {
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-  }
-
-  function setUserHeader() {
-    userNameHeader.textContent = currentUser.name ? currentUser.name.toUpperCase() : "غير مسجّل";
-    if (!currentUser.role) {
-      userRoleHeader.textContent = "—";
-    } else if (currentUser.role === "specialist") {
-      userRoleHeader.textContent = "Lab Specialist – لوحة كاملة للإحصائيات 💚";
-    } else {
-      userRoleHeader.textContent = "Team Member – معا نخلي النظام مرتب 🌿";
-    }
-  }
-
-  // 🔐 تسجيل الدخول
-  loginBtn.addEventListener("click", () => {
-    const name = loginName.value.trim() || "Guest";
-    const pass = loginPassword.value.trim();
-
-    if (!pass) {
-      loginError.textContent = "فضلاً أدخلي كلمة المرور.";
-      return;
-    }
-
-    if (pass === SPECIALIST_PASSWORD) {
-      currentUser = { name, role: "specialist" };
-      loginError.textContent = "";
-      setUserHeader();
-      showScreen("dashboardScreen");
-      alert("يا مرحبا بالأخصائية 🌟 جاهزين نشوف الإحصائيات؟");
-    } else if (pass === NORMAL_PASSWORD) {
-      currentUser = { name, role: "team" };
-      loginError.textContent = "";
-      setUserHeader();
-      showScreen("dashboardScreen");
-      alert("دخول ناجح 💚 يوم مليان إنجاز بإذن الله.");
-    } else {
-      loginError.textContent = "كلمة المرور غير صحيحة.";
-    }
-  });
-
-  // 🔄 فتح الأقسام من البطاقات
-  const sectionIds = [
-    "newCaseSection",
-    "labReceiveSection",
-    "searchSection",
-    "assistantReceiveSection",
-    "statsSection",
-    "rejectedSection"
-  ];
-
-  function showSection(id) {
-    sectionIds.forEach(secId => {
-      document.getElementById(secId).style.display = (secId === id) ? "block" : "none";
-    });
-
-    // لو فتحنا لوحة الإحصائيات – نحدّث الأرقام
-    if (id === "statsSection") {
-      loadStats();
-    }
-  }
-
-  document.querySelectorAll(".card[data-section]").forEach(card => {
-    card.addEventListener("click", () => {
-      const id = card.getAttribute("data-section");
-      if (id === "statsSection" && currentUser.role !== "specialist") {
-        alert("لوحة الإحصائيات للأخصائية فقط (دخول بكلمة 0987).");
+    if (!fileNumber || !patientName || !clinicNumber || !doctorName) {
+        error.innerText = "❌ الرجاء تعبئة جميع الحقول الأساسية";
+        error.style.display = "block";
         return;
-      }
-      showSection(id);
-    });
-  });
-
-  // 📝 حفظ حالة جديدة في cases + tracking
-  const newCaseForm = document.getElementById("newCaseForm");
-  const newCaseError = document.getElementById("newCaseError");
-  const clearNewCaseBtn = document.getElementById("clearNewCaseBtn");
-
-  clearNewCaseBtn.addEventListener("click", () => {
-    newCaseForm.reset();
-    newCaseError.textContent = "";
-  });
-
-  newCaseForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    newCaseError.textContent = "";
-
-    const fileNumber = document.getElementById("fileNumberInput").value.trim();
-    const patientName = document.getElementById("patientNameInput").value.trim();
-    const clinicNumber = document.getElementById("clinicNumberInput").value.trim();
-    const doctorName = document.getElementById("doctorNameInput").value.trim();
-    const caseType = document.getElementById("caseTypeInput").value;
-    const nextAppointment = document.getElementById("nextAppointmentInput").value;
-    const note = document.getElementById("noteInput").value.trim();
-    const imageUrl = document.getElementById("imageUrlInput").value.trim();
-
-    if (!fileNumber || !patientName || !clinicNumber) {
-      newCaseError.textContent = "رقم الملف، اسم المريض، ورقم العيادة حقول أساسية.";
-      return;
     }
 
-    const labNumber = "LAB-" + Date.now().toString().slice(-6);
-    const barcode = labNumber; // مبدئياً نخلي الباركود نفس رقم المعمل
+    // توليد رقم معمل تلقائي
+    let labNumber = "LAB-" + Math.floor(100000 + Math.random() * 900000);
 
-    try {
-      // إضافة في مجموعة cases
-      const caseRef = await addDoc(collection(db, "cases"), {
-        fileNumber,
-        patientName,
-        clinicNumber,
-        doctorName,
-        caseType,
-        nextAppointment: nextAppointment || null,
-        note: note || "",
-        createdAt: serverTimestamp(),
-        labNumber,
-        barcode,
-        createdBy: currentUser.name || "Clinic Reception"
-      });
+    // توليد باركود نصي
+    let barcode = labNumber + "-" + fileNumber;
 
-      // أول حركة في tracking
-      await addDoc(collection(caseRef, "tracking"), {
-        status: "Entered from Clinic",
-        updatedBy: currentUser.name || "Clinic Reception",
-        time: serverTimestamp(),
-        note: "Case added to system"
-      });
+    success.innerHTML =
+        `✔ تم حفظ الحالة بنجاح  
+        <br> رقم المعمل: <b>${labNumber}</b>  
+        <br> الباركود: <b>${barcode}</b>`;
 
-      alert("تم حفظ الحالة بنجاح 🎉\nLab Number / Barcode: " + labNumber);
-      newCaseForm.reset();
-    } catch (err) {
-      console.error(err);
-      newCaseError.textContent = "حصل خطأ أثناء الحفظ. تأكدي من الاتصال بالإنترنت.";
-    }
-  });
-
-  // 🏭 استلام المعمل – نحدّث tracking فقط (البحث بسيط على fileNumber)
-  const labReceiveForm = document.getElementById("labReceiveForm");
-  const labReceiveError = document.getElementById("labReceiveError");
-
-  labReceiveForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    labReceiveError.textContent = "";
-
-    const barcode = document.getElementById("barcodeReceiveInput").value.trim();
-    const fileNo = document.getElementById("fileReceiveInput").value.trim();
-
-    if (!barcode && !fileNo) {
-      labReceiveError.textContent = "فضلاً أدخلي الباركود أو رقم الملف.";
-      return;
-    }
-
-    try {
-      let q;
-      if (barcode) {
-        q = query(collection(db, "cases"), where("barcode", "==", barcode));
-      } else {
-        q = query(collection(db, "cases"), where("fileNumber", "==", fileNo));
-      }
-
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        labReceiveError.textContent = "لم يتم العثور على حالة مطابقة.";
-        return;
-      }
-
-      const caseDoc = snap.docs[0];
-      await addDoc(collection(caseDoc.ref, "tracking"), {
-        status: "Received at Lab",
-        updatedBy: currentUser.name || "Lab Receiver",
-        time: serverTimestamp(),
-        note: "Case checked-in at lab"
-      });
-
-      alert("تم تأكيد وصول الحالة للمعمل ✅");
-      labReceiveForm.reset();
-    } catch (err) {
-      console.error(err);
-      labReceiveError.textContent = "خطأ أثناء التحديث. جرّبي مرة أخرى.";
-    }
-  });
-
-  // 📦 استلام المساعدة من الفني / جاهزة للعيادة
-  const assistantReceiveForm = document.getElementById("assistantReceiveForm");
-  const assistantReceiveError = document.getElementById("assistantReceiveError");
-
-  assistantReceiveForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    assistantReceiveError.textContent = "";
-
-    const barcode = document.getElementById("assistantBarcodeInput").value.trim();
-    const assistantName = document.getElementById("assistantNameInput").value.trim() || currentUser.name || "Assistant";
-
-    if (!barcode) {
-      assistantReceiveError.textContent = "فضلاً أدخلي الباركود.";
-      return;
-    }
-
-    try {
-      const q = query(collection(db, "cases"), where("barcode", "==", barcode));
-      const snap = await getDocs(q);
-
-      if (snap.empty) {
-        assistantReceiveError.textContent = "لم يتم العثور على حالة بهذا الباركود.";
-        return;
-      }
-
-      const caseDoc = snap.docs[0];
-      await addDoc(collection(caseDoc.ref, "tracking"), {
-        status: "Ready for Clinic",
-        updatedBy: assistantName,
-        time: serverTimestamp(),
-        note: "Case delivered from lab to clinic"
-      });
-
-      alert("يعطيك العافية 🤍💚 خطوة جديدة تقرّبنا من ابتسامة المريض الجميلة.");
-      assistantReceiveForm.reset();
-    } catch (err) {
-      console.error(err);
-      assistantReceiveError.textContent = "خطأ أثناء التحديث.";
-    }
-  });
-
-  // 🔎 بحث عن حالة – عرض بسيط للمعلومات والحركات
-  const searchForm = document.getElementById("searchForm");
-  const searchResults = document.getElementById("searchResults");
-
-  searchForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    searchResults.textContent = "جاري البحث ...";
-
-    const fileNo = document.getElementById("searchFileInput").value.trim();
-    const barcode = document.getElementById("searchBarcodeInput").value.trim();
-
-    if (!fileNo && !barcode) {
-      searchResults.textContent = "فضلاً أدخلي رقم الملف أو الباركود.";
-      return;
-    }
-
-    try {
-      let q;
-      if (barcode) {
-        q = query(collection(db, "cases"), where("barcode", "==", barcode));
-      } else {
-        q = query(collection(db, "cases"), where("fileNumber", "==", fileNo));
-      }
-
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        searchResults.textContent = "لا توجد حالة مطابقة للبيانات المدخلة.";
-        return;
-      }
-
-      const caseDoc = snap.docs[0];
-      const data = caseDoc.data();
-
-      // نجيب حركات التتبع
-      const trackSnap = await getDocs(collection(caseDoc.ref, "tracking"));
-      const tracks = [];
-      trackSnap.forEach(d => {
-        tracks.push({ id: d.id, ...d.data() });
-      });
-      tracks.sort((a,b) => (a.time?.seconds || 0) - (b.time?.seconds || 0));
-
-      let html = "";
-      html += `<div><strong>المريض:</strong> ${data.patientName || "-"} <br />`;
-      html += `<strong>رقم الملف:</strong> ${data.fileNumber || "-"}<br />`;
-      html += `<strong>رقم المعمل / الباركود:</strong> ${data.labNumber || data.barcode || "-"}<br />`;
-      html += `<strong>العيادة:</strong> ${data.clinicNumber || "-"} – <strong>الطبيب:</strong> ${data.doctorName || "-"}<br />`;
-      html += `<strong>نوع الحالة:</strong> ${data.caseType || "-"}<br />`;
-      if (data.nextAppointment) {
-        html += `<strong>موعد المريض القادم:</strong> ${data.nextAppointment}<br />`;
-      }
-      if (data.note) {
-        html += `<strong>ملاحظة:</strong> ${data.note}<br />`;
-      }
-      html += `</div><hr />`;
-
-      html += `<div><strong>مسار الحالة (Tracking):</strong><br />`;
-      if (!tracks.length) {
-        html += `<span class="muted">لا توجد حركات حتى الآن.</span>`;
-      } else {
-        html += `<ul style="padding-right:18px; margin-top:6px;">`;
-        for (const t of tracks) {
-          const dateStr = t.time?.toDate ? t.time.toDate().toLocaleString() : "-";
-          html += `<li><span class="badge gray">${t.status}</span> بواسطة ${t.updatedBy || "-"} – <span class="muted">${dateStr}</span>`;
-          if (t.note) html += `<br /><span class="muted">${t.note}</span>`;
-          html += `</li>`;
-        }
-        html += `</ul>`;
-      }
-      html += `</div>`;
-
-      searchResults.innerHTML = html;
-    } catch (err) {
-      console.error(err);
-      searchResults.textContent = "حصل خطأ أثناء البحث.";
-    }
-  });
-
-  // 📊 إحصائيات بسيطة مبدئية
-  async function loadStats() {
-    if (currentUser.role !== "specialist") return;
-
-    try {
-      const snap = await getDocs(collection(db, "cases"));
-      const allCases = [];
-      snap.forEach(d => allCases.push({ id: d.id, ...d.data() }));
-
-      document.getElementById("totalCasesStat").textContent = allCases.length.toString();
-
-      // نحتاج تمر على كل tracking
-      let entered = 0, received = 0, ready = 0;
-      for (const c of snap.docs) {
-        const trSnap = await getDocs(collection(c.ref, "tracking"));
-        trSnap.forEach(t => {
-          const status = t.data().status;
-          if (status === "Entered from Clinic") entered++;
-          if (status === "Received at Lab") received++;
-          if (status === "Ready for Clinic") ready++;
-        });
-      }
-
-      document.getElementById("enteredFromClinicStat").textContent = entered.toString();
-      document.getElementById("receivedAtLabStat").textContent = received.toString();
-      document.getElementById("readyForClinicStat").textContent = ready.toString();
-    } catch (err) {
-      console.error(err);
-      alert("تعذر تحميل الإحصائيات حالياً.");
-    }
-  }
-
-  // ⚙️ زر الإعدادات – برقم سري بسيط (لاحقاً نضيف إعدادات فنية)
-  document.getElementById("settingsBtn").addEventListener("click", () => {
-    const pwd = prompt("أدخلي كلمة مرور الإعدادات:");
-    if (pwd === SETTINGS_PASSWORD) {
-      alert("إعدادات قيد التطوير 🔧✨ (حالياً فقط حماية بسيطة للزر).");
-    } else if (pwd !== null) {
-      alert("كلمة مرور الإعدادات غير صحيحة.");
-    }
-  });
-
-  // لراحة المستخدم – Enter يعمل دخول
-  loginPassword.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") loginBtn.click();
-  });
+    success.style.display = "block";
+}
 </script>
+
+</body>
+</html>
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Check-In – DSA LAB SYSTEM</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background: #f3faf7;
+        }
+
+        .topbar {
+            background: #0f9d58;
+            color: white;
+            padding: 14px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 25px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+        }
+
+        h3 {
+            margin-top: 5px;
+            color: #0f9d58;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #0f9d58;
+        }
+
+        button {
+            margin-top: 22px;
+            padding: 11px 22px;
+            background: #0f9d58;
+            border: none;
+            color: white;
+            font-size: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0c7c45;
+        }
+
+        .info {
+            margin-top: 16px;
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #b2dfdb;
+            display: none;
+        }
+
+        .success {
+            margin-top: 15px;
+            color: #0a792c;
+            font-weight: bold;
+            display: none;
+        }
+
+        .error {
+            margin-top: 15px;
+            color: #b00020;
+            font-weight: bold;
+            display: none;
+        }
+
+        .back {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back a {
+            color: #0f9d58;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="topbar">
+    استلام الحالة في المعمل – Lab Check-In
+</div>
+
+<div class="container">
+
+    <h3>🏭 مسح الباركود أو إدخال رقم الحالة</h3>
+
+    <label>أدخل الباركود / Barcode</label>
+    <input id="barcode" type="text" placeholder="LAB-123456-000001">
+
+    <button onclick="searchCase()">🔎 بحث عن الحالة</button>
+
+    <div id="error" class="error"></div>
+
+    <!-- معلومات الحالة بعد البحث -->
+    <div id="caseInfo" class="info"></div>
+
+    <!-- زر الاستلام -->
+    <button id="receiveBtn" style="display:none;" onclick="receiveCase()">
+        ✅ تم استلام الحالة في المعمل
+    </button>
+
+    <div id="success" class="success"></div>
+
+    <div class="back">
+        <a href="dashboard.html">← العودة للوحة التحكم</a>
+    </div>
+
+</div>
+
+<script>
+function searchCase() {
+    let barcode = document.getElementById("barcode").value.trim();
+    let caseBox = document.getElementById("caseInfo");
+    let err = document.getElementById("error");
+    let receiveBtn = document.getElementById("receiveBtn");
+
+    err.style.display = "none";
+    caseBox.style.display = "none";
+    receiveBtn.style.display = "none";
+
+    if (barcode === "") {
+        err.innerText = "❌ الرجاء إدخال الباركود";
+        err.style.display = "block";
+        return;
+    }
+
+    // في النسخة النهائية سيتم البحث من قاعدة البيانات
+    caseBox.innerHTML =
+        `<b>الباركود:</b> ${barcode}<br>
+        <b>اسم المريض:</b> Patient Name<br>
+        <b>رقم الملف:</b> 123456<br>
+        <b>نوع الحالة:</b> Crown`;
+
+    caseBox.style.display = "block";
+    receiveBtn.style.display = "block";
+}
+
+function receiveCase() {
+    let success = document.getElementById("success");
+    let receiveBtn = document.getElementById("receiveBtn");
+
+    let now = new Date().toLocaleString();
+
+    success.innerHTML =
+        `✔ تم تسجيل استلام الحالة في المعمل<br>الوقت: <b>${now}</b>`;
+
+    success.style.display = "block";
+    receiveBtn.style.display = "none";
+}
+</script>
+
+</body>
+</html>
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technician Dashboard – DSA LAB SYSTEM</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f0f9ff;
+            font-family: "Tajawal", sans-serif;
+        }
+
+        .topbar {
+            background: #0f82d1;
+            color: white;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 25px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+        }
+
+        h3 {
+            color: #0f82d1;
+            margin-bottom: 8px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 12px;
+            display: block;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+        }
+
+        .caseBox {
+            padding: 15px;
+            border: 1px solid #bbe9ff;
+            background: #e9f8ff;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 12px;
+            background: #0f82d1;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0d6bad;
+        }
+
+        .green {
+            background: #0fa958 !important;
+        }
+        .yellow {
+            background: #ffb300 !important;
+        }
+        .red {
+            background: #d32f2f !important;
+        }
+
+        .info {
+            margin-top: 15px;
+            background: #e9fbe8;
+            padding: 12px;
+            color: #0a7f25;
+            display: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="topbar">
+    👨🏻‍🔧 لوحة الفنيين – Technicians Dashboard
+</div>
+
+<div class="container">
+
+    <h3>🔧 اختيار القسم</h3>
+    <select id="department" onchange="loadTechs()">
+        <option value="">اختر القسم</option>
+        <option value="CAD">CAD/CAM</option>
+        <option value="PFM">PFM</option>
+        <option value="Ortho">Ortho</option>
+        <option value="RPD">RPD</option>
+        <option value="TEMP">Temporary</option>
+        <option value="Casting">Casting</option>
+    </select>
+
+    <h3>👷‍♂️ اختيار الفني</h3>
+    <select id="technician">
+        <option value="">اختر الفني</option>
+    </select>
+
+    <button class="btn" onclick="loadCases()">🔎 عرض الحالات</button>
+
+    <div id="caseList"></div>
+
+    <div id="doneMsg" class="info"></div>
+
+</div>
+
+<script>
+const technicians = {
+    CAD: ["قاسم عسيري", "أحمد كوشان", "عبدالله الرشيد", "عبدالله الشهراني", "أحمد القحطاني", "يحيى عسيري"],
+    PFM: ["سلطان الأحمري", "أيمن الشهري", "فيصل الوادعي"],
+    Ortho: ["تركي الشهري", "وليد الشهري", "أسامة عسيري"],
+    RPD: ["رشيد الكثيري", "أحمد الصخري", "عبداللطيف عسيري", "محمد الشرفان", "الاء", "هيام", "محمد الغامدي", "منصور العويرضي", "عبدالله الغامدي"],
+    TEMP: ["أحمد الشبل", "وليد السويري", "فهد العتيبي", "عبدالله العود"],
+    Casting: ["فهد الخميس"]
+};
+
+function loadTechs() {
+    let dep = document.getElementById("department").value;
+    let techSelect = document.getElementById("technician");
+
+    techSelect.innerHTML = `<option value="">اختر الفني</option>`;
+
+    if (dep && technicians[dep]) {
+        technicians[dep].forEach(t => {
+            techSelect.innerHTML += `<option value="${t}">${t}</option>`;
+        });
+    }
+}
+
+function loadCases() {
+    let dep = document.getElementById("department").value;
+    let tech = document.getElementById("technician").value;
+
+    if (!dep || !tech) {
+        alert("الرجاء اختيار القسم والفني");
+        return;
+    }
+
+    // نسخة بدون قاعدة بيانات – عرض بيانات تجريبية
+    document.getElementById("caseList").innerHTML = `
+        <div class="caseBox">
+            <b>اسم المريض:</b> Patient A <br>
+            <b>رقم الملف:</b> 123456 <br>
+            <b>نوع الحالة:</b> ${dep} <br>
+            <b>الفني:</b> ${tech} <br>
+            <button class="btn green" onclick="markDone()">✔ Completed</button>
+            <button class="btn yellow" onclick="markProgress()">🔧 In Progress</button>
+            <button class="btn red" onclick="returnCase()">↩ إرجاع الحالة</button>
+        </div>
+    `;
+}
+
+function markDone() {
+    let msg = document.getElementById("doneMsg");
+    msg.innerHTML = "✔ تم تحديث الحالة إلى: Completed";
+    msg.style.display = "block";
+}
+
+function markProgress() {
+    let msg = document.getElementById("doneMsg");
+    msg.innerHTML = "🔧 الحالة الآن: In Progress";
+    msg.style.display = "block";
+}
+
+function returnCase() {
+    let msg = document.getElementById("doneMsg");
+    msg.innerHTML = "↩ الحالة رجعت للتعديل — سيتم إرسال إشعار للعيادة.";
+    msg.style.display = "block";
+}
+</script>
+
+</body>
+</html>
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ready for Clinic – DSA LAB SYSTEM</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f7fff9;
+            font-family: "Tajawal", sans-serif;
+        }
+
+        .topbar {
+            background: #0fa958;
+            color: white;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 25px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+        }
+
+        h3 {
+            color: #0fa958;
+            margin-bottom: 8px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 12px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-top: 6px;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 12px;
+            background: #0fa958;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0d8647;
+        }
+
+        #msg {
+            margin-top: 20px;
+            background: #e5ffec;
+            padding: 15px;
+            border-radius: 10px;
+            color: #0d8647;
+            font-size: 17px;
+            display: none;
+        }
+
+        .signBox {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff8e6;
+            border: 1px solid #ffe1a8;
+            border-radius: 10px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 160px;
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .smallBtn {
+            padding: 8px 10px;
+            background: #ffb300;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="topbar">
+    ✔️ صفحة الاستلام النهائي – Ready for Clinic
+</div>
+
+<div class="container">
+
+    <h3>🔎 ابحث عن الحالة</h3>
+    <input type="text" id="search" placeholder="اكتب رقم الملف أو الباركود...">
+    <button class="btn" onclick="searchCase()">بحث</button>
+
+    <div id="caseData" style="display:none;">
+
+        <h3>📄 معلومات الحالة</h3>
+        <label>اسم المريض:</label>
+        <input type="text" id="patientName" readonly>
+
+        <label>رقم الملف:</label>
+        <input type="text" id="fileNumber" readonly>
+
+        <label>نوع الحالة:</label>
+        <input type="text" id="caseType" readonly>
+
+        <label>القسم:</label>
+        <input type="text" id="caseDept" readonly>
+
+        <label>اختر مكان التسليم:</label>
+        <select id="deliverTo">
+            <option value="">— اختر —</option>
+            <option value="RDC1">RDC1</option>
+            <option value="RDC2">RDC2</option>
+            <option value="Box1">Box 1</option>
+            <option value="Box2">Box 2</option>
+            <option value="Box3">Box 3</option>
+            <option value="Box4">Box 4</option>
+            <option value="Box5">Box 5</option>
+        </select>
+
+        <div class="signBox">
+            <h3>✍️ توقيع استلام المساعدة</h3>
+            <canvas id="sign"></canvas>
+            <button class="smallBtn" onclick="clearSign()">مسح التوقيع</button>
+        </div>
+
+        <button class="btn" onclick="submitReady()">✔ تأكيد التسليم</button>
+    </div>
+
+    <div id="msg"></div>
+
+</div>
+
+<script>
+let canvas = document.getElementById("sign");
+let ctx = canvas.getContext("2d");
+let drawing = false;
+
+canvas.addEventListener("mousedown", () => drawing = true);
+canvas.addEventListener("mouseup", () => drawing = false);
+canvas.addEventListener("mousemove", draw);
+
+function draw(e) {
+    if (!drawing) return;
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#0d8647";
+
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+}
+
+function clearSign() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// بحث تجريبي بدون قاعدة بيانات
+function searchCase() {
+    document.getElementById("caseData").style.display = "block";
+
+    document.getElementById("patientName").value = "Patient A";
+    document.getElementById("fileNumber").value = "123456";
+    document.getElementById("caseType").value = "RPD";
+    document.getElementById("caseDept").value = "RPD Department";
+}
+
+function submitReady() {
+    let msg = document.getElementById("msg");
+    msg.innerHTML = "✨ تم تسليم الحالة بنجاح!<br>يا سلام… شغل مرتّب وراقي يا وداد!";
+    msg.style.display = "block";
+}
+</script>
+
+</body>
+</html>
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings – DSA LAB SYSTEM</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f6fff7;
+            font-family: "Tajawal", sans-serif;
+        }
+
+        .topbar {
+            background: #0fa958;
+            padding: 15px;
+            text-align: center;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 25px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+        }
+
+        .passwordBox {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+        }
+
+        .btn {
+            padding: 12px;
+            background: #0fa958;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0c8a4b;
+        }
+
+        .sectionTitle {
+            margin-top: 25px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #0fa958;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background: #0fa958;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .switchActive {
+            background: #0fa958;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .switchInactive {
+            background: #ff5555;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="topbar">
+    ⚙️ الإعدادات – Settings
+</div>
+
+<div class="container">
+
+    <!-- دخول الإعدادات -->
+    <div id="loginSettings">
+        <h3 style="text-align:center;">🔐 أدخلي الرقم السري الخاص بالأخصائية</h3>
+        <input type="password" id="settingsPass" placeholder="••••">
+        <button class="btn" onclick="checkPass()">دخول</button>
+    </div>
+
+    <!-- محتوى الإعدادات -->
+    <div id="settingsContent" style="display:none;">
+
+        <div class="sectionTitle">📌 قائمة الفنيين</div>
+
+        <table>
+            <tr>
+                <th>اسم الفني</th>
+                <th>القسم</th>
+                <th>الحالة</th>
+            </tr>
+
+            <tbody id="techList"></tbody>
+        </table>
+
+        <div class="sectionTitle">➕ إضافة فني جديد</div>
+        <input type="text" id="newTechName" placeholder="اسم الفني">
+        <select id="newTechDept">
+            <option value="">اختر القسم</option>
+            <option>RPD</option>
+            <option>PFM</option>
+            <option>CD</option>
+            <option>ORTHO</option>
+            <option>TM</option>
+        </select>
+        <button class="btn" onclick="addTech()">إضافة</button>
+
+        <div class="sectionTitle">🎯 تعديل العبارات التحفيزية</div>
+        <input type="text" id="motivationInput" placeholder="أكتبي عبارة جديدة">
+        <button class="btn" onclick="saveMotivation()">حفظ العباره</button>
+
+        <div id="msg" style="margin-top:15px;color:#0fa958;font-size:17px;font-weight:bold;"></div>
+
+    </div>
+</div>
+
+<script>
+// الرقم السري المخصص للأخصائية وداد
+const SPECIAL_PASS = "0987";
+
+// قائمة الفنيين الأساسية
+let technicians = [
+    {name:"قاسم عسيري", dept:"CD", active:true},
+    {name:"أحمد كوشان", dept:"CD", active:true},
+    {name:"عبدالله الرشيد", dept:"CD", active:true},
+    {name:"عبدالله الشهراني", dept:"CD", active:true},
+    {name:"أحمد القحطاني", dept:"CD", active:true},
+    {name:"يحيى عسيري", dept:"CD", active:false}, // إجازة
+    {name:"سلطان الاحمري", dept:"PFM", active:false},
+    {name:"أيمن الشهري", dept:"PFM", active:true},
+    {name:"فيصل الوادعي", dept:"PFM", active:true},
+    {name:"تركي الشهري", dept:"ORTHO", active:false},
+    {name:"وليد الشهري", dept:"ORTHO", active:true},
+    {name:"أسامة عسيري", dept:"ORTHO", active:true},
+    {name:"رشيد الكثيري", dept:"RPD", active:true},
+    {name:"أحمد الصخري", dept:"RPD", active:true},
+    {name:"عبداللطيف عسيري", dept:"RPD", active:true},
+    {name:"محمد الشرفان", dept:"RPD", active:true},
+    {name:"الاء", dept:"RPD", active:true},
+    {name:"هيام", dept:"RPD", active:true},
+    {name:"محمد الغامدي", dept:"RPD", active:true},
+    {name:"عبدالله الغامدي", dept:"RPD", active:true},
+    {name:"منصور العويرضي", dept:"RPD", active:true},
+    {name:"أحمد الشبل", dept:"TM", active:true},
+    {name:"وليد السويري", dept:"TM", active:true},
+    {name:"فهد العتيبي", dept:"TM", active:true},
+    {name:"عبدالله العود", dept:"TM", active:true},
+    {name:"فهد الخميس", dept:"Casting", active:true}
+];
+
+function checkPass() {
+    let pass = document.getElementById("settingsPass").value;
+
+    if (pass === SPECIAL_PASS) {
+        document.getElementById("loginSettings").style.display = "none";
+        document.getElementById("settingsContent").style.display = "block";
+        loadTechList();
+    } else {
+        alert("❌ الرقم السري غير صحيح!");
+    }
+}
+
+function loadTechList() {
+    let list = document.getElementById("techList");
+    list.innerHTML = "";
+
+    technicians.forEach((tech, i)=>{
+        let status = tech.active ?
+            `<span class="switchActive" onclick="toggleTech(${i})">Active</span>` :
+            `<span class="switchInactive" onclick="toggleTech(${i})">Inactive</span>`;
+
+        list.innerHTML += `
+            <tr>
+                <td>${tech.name}</td>
+                <td>${tech.dept}</td>
+                <td>${status}</td>
+            </tr>
+        `;
+    });
+}
+
+function toggleTech(i) {
+    technicians[i].active = !technicians[i].active;
+    loadTechList();
+}
+
+function addTech() {
+    let name = document.getElementById("newTechName").value;
+    let dept = document.getElementById("newTechDept").value;
+
+    if (name === "" || dept === "") {
+        alert("❌ الرجاء إدخال البيانات كاملة");
+        return;
+    }
+
+    technicians.push({name, dept, active:true});
+    loadTechList();
+
+    document.getElementById("newTechName").value = "";
+    document.getElementById("newTechDept").value = "";
+}
+
+function saveMotivation() {
+    let msg = document.getElementById("motivationInput").value;
+
+    if (msg === "") {
+        alert("❌ اكتبي العباره");
+        return;
+    }
+
+    document.getElementById("msg").innerHTML = "✔️ تم حفظ العبارة بنجاح!";
+    document.getElementById("motivationInput").value = "";
+}
+</script>
+
+</body>
+</html>
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejected Cases – DSA LAB SYSTEM</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f7fff9;
+            font-family: "Tajawal", sans-serif;
+        }
+
+        .topbar {
+            background: #0fa958;
+            color: white;
+            padding: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 25px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        h3 {
+            color: #0fa958;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 12px;
+            display: block;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-top: 6px;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 90px;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 12px;
+            background: #0fa958;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0c8a4b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th {
+            background: #0fa958;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            background: #fff;
+        }
+
+        .rejectTag {
+            background: #ffdddd;
+            color: #c00000;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="topbar">
+    ❌ الحالات المرفوضة – Rejected Cases
+</div>
+
+<div class="container">
+
+    <h3>إضافة حالة مرفوضة</h3>
+
+    <label>رقم الملف:</label>
+    <input type="text" id="fileNumber">
+
+    <label>اسم المريض:</label>
+    <input type="text" id="patientName">
+
+    <label>نوع الحالة:</label>
+    <select id="caseType">
+        <option value="">اختر</option>
+        <option>RPD</option>
+        <option>PFM</option>
+        <option>CD</option>
+        <option>ORTHO</option>
+        <option>TM</option>
+    </select>
+
+    <label>القسم:</label>
+    <select id="dept">
+        <option value="">اختر</option>
+        <option>RPD</option>
+        <option>PFM</option>
+        <option>CD</option>
+        <option>ORTHO</option>
+        <option>TM</option>
+    </select>
+
+    <label>السبب:</label>
+    <textarea id="reason" placeholder="اكتبي سبب الرفض… مثل: عدد الأسنان أقل من 3 – غير قابل للتنفيذ…"></textarea>
+
+    <button class="btn" onclick="addReject()">إضافة</button>
+
+    <hr style="margin:30px 0; border: 0; border-top: 2px solid #eee;">
+
+    <h3>بحث عن حالة مرفوضة</h3>
+
+    <input type="text" id="searchBox" placeholder="ابحثي برقم الملف أو اسم المريض…" onkeyup="searchReject()">
+
+    <table id="rejectTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>المريض</th>
+                <th>رقم الملف</th>
+                <th>نوع الحالة</th>
+                <th>القسم</th>
+                <th>السبب</th>
+            </tr>
+        </thead>
+        <tbody id="rejectBody"></tbody>
+    </table>
+
+</div>
+
+<script>
+// قائمة تجريبية – لاحقاً تربط مع Firestore
+let rejectedList = [];
+
+function addReject() {
+    let file = document.getElementById("fileNumber").value;
+    let name = document.getElementById("patientName").value;
+    let type = document.getElementById("caseType").value;
+    let dept = document.getElementById("dept").value;
+    let reason = document.getElementById("reason").value;
+
+    if (file === "" || name === "" || type === "" || dept === "" || reason === "") {
+        alert("❌ الرجاء تعبئة جميع الخانات");
+        return;
+    }
+
+    rejectedList.push({ file, name, type, dept, reason });
+
+    alert("✔ تم إضافة الحالة المرفوضة");
+
+    document.getElementById("fileNumber").value = "";
+    document.getElementById("patientName").value = "";
+    document.getElementById("caseType").value = "";
+    document.getElementById("dept").value = "";
+    document.getElementById("reason").value = "";
+
+    showTable();
+}
+
+function showTable() {
+    let table = document.getElementById("rejectTable");
+    let body = document.getElementById("rejectBody");
+
+    table.style.display = "table";
+    body.innerHTML = "";
+
+    rejectedList.forEach(item => {
+        body.innerHTML += `
+        <tr>
+            <td>${item.name}</td>
+            <td>${item.file}</td>
+            <td>${item.type}</td>
+            <td>${item.dept}</td>
+            <td><span class="rejectTag">${item.reason}</span></td>
+        </tr>`;
+    });
+}
+
+function searchReject() {
+    let word = document.getElementById("searchBox").value;
+    let body = document.getElementById("rejectBody");
+
+    let filtered = rejectedList.filter(item =>
+        item.name.includes(word) ||
+        item.file.includes(word)
+    );
+
+    body.innerHTML = "";
+
+    filtered.forEach(item => {
+        body.innerHTML += `
+        <tr>
+            <td>${item.name}</td>
+            <td>${item.file}</td>
+            <td>${item.type}</td>
+            <td>${item.dept}</td>
+            <td><span class="rejectTag">${item.reason}</span></td>
+        </tr>`;
+    });
+}
+</script>
+
+</body>
+</html>
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA LAB SYSTEM – Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f4fff6;
+            font-family: "Tajawal", sans-serif;
+        }
+
+        .topbar {
+            background: #0fa958;
+            color: white;
+            padding: 18px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+            transition: 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .box:hover {
+            transform: scale(1.03);
+            border-color: #0fa958;
+        }
+
+        .icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+            color: #0fa958;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #0fa958;
+        }
+
+        .desc {
+            font-size: 14px;
+            color: #555;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="topbar">
+    💚 DSA LAB SYSTEM – لوحة التحكم الرئيسية
+</div>
+
+<div class="container">
+
+    <div class="box" onclick="go('clinic_entry.html')">
+        <div class="icon">📝</div>
+        <div class="title">تسجيل حالة جديدة</div>
+        <div class="desc">إضافة حالة من العيادة مع الباركود</div>
+    </div>
+
+    <div class="box" onclick="go('lab_checkin.html')">
+        <div class="icon">🏭</div>
+        <div class="title">استلام من المعمل</div>
+        <div class="desc">مسح QR وتأكيد وصول الحالة</div>
+    </div>
+
+    <div class="box" onclick="go('technician_assign.html')">
+        <div class="icon">👨🏻‍🔧</div>
+        <div class="title">توزيع الفنيين</div>
+        <div class="desc">تحديد الفني حسب القسم وخطوات الحالة</div>
+    </div>
+
+    <div class="box" onclick="go('ready_clinic.html')">
+        <div class="icon">📦</div>
+        <div class="title">جاهز للعيادة</div>
+        <div class="desc">تسليم الحالة للعيادة أو BOX</div>
+    </div>
+
+    <div class="box" onclick="go('search.html')">
+        <div class="icon">🔍</div>
+        <div class="title">بحث متقدم</div>
+        <div class="desc">بحث شامل بالملف – الاسم – الباركود</div>
+    </div>
+
+    <div class="box" onclick="go('rejected.html')">
+        <div class="icon">❌</div>
+        <div class="title">الحالات المرفوضة</div>
+        <div class="desc">إضافة / عرض الحالات غير المقبولة</div>
+    </div>
+
+    <div class="box" onclick="settingsPage()">
+        <div class="icon">⚙️</div>
+        <div class="title">الإعدادات</div>
+        <div class="desc">إدارة الفنيين والعبارات وكلمات السر</div>
+    </div>
+
+</div>
+
+<script>
+function go(page) {
+    window.location.href = page;
+}
+
+function settingsPage() {
+    let pass = prompt("🔐 أدخلي الرقم السري للأخصائية:");
+
+    if (pass === "0987") {
+        window.location.href = "settings.html";
+    } else {
+        alert("❌ الرقم غير صحيح");
+    }
+}
+</script>
+
+</body>
+</html>
+  <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DSA LAB SYSTEM – Login</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0fa958, #0c8a4b);
+            font-family: "Tajawal", sans-serif;
+        }
+
+        .login-box {
+            width: 350px;
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeIn 0.7s ease;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: #0fa958;
+            font-size: 22px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #0fa958;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #0c8a4b;
+        }
+
+        .error {
+            margin-top: 10px;
+            color: red;
+            font-weight: bold;
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {transform: translateY(20px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-box">
+        <h2>DSA LAB SYSTEM</h2>
+        <p style="margin:0;color:gray;">تسجيل الدخول</p>
+
+        <input type="text" id="username" placeholder="اسم المستخدم" />
+        <input type="password" id="password" placeholder="الرقم السري" />
+
+        <button onclick="login()">دخول</button>
+
+        <div class="error" id="errorBox">❌ اسم المستخدم أو الرقم السري غير صحيح</div>
+    </div>
+
+    <script>
+        // بيانات المستخدمين (تقدرين توسعينها لاحقاً)
+        const USERS = [
+            { user: "admin", pass: "1234" },
+            { user: "clinic", pass: "1111" },
+            { user: "lab", pass: "2222" },
+            { user: "tech", pass: "3333" }
+        ];
+
+        function login() {
+            let u = document.getElementById("username").value;
+            let p = document.getElementById("password").value;
+            let err = document.getElementById("errorBox");
+
+            let ok = USERS.find(x => x.user === u && x.pass === p);
+
+            if (ok) {
+                err.style.display = "none";
+
+                // الرسالة التحفيزية قبل النقل
+                alert("✨ يا مرحبا! جاهزين نرتّب ونبدع اليوم؟ 🔥");
+
+                // الانتقال للداشبورد
+                window.location.href = "home.html";
+            } else {
+                err.style.display = "block";
+            }
+        }
+    </script>
+
+</body>
+</html>
 
 </body>
 </html>
