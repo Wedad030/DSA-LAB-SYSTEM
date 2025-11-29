@@ -1,114 +1,97 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DSA Lab System</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            margin: 0;
-            padding: 20px;
-            direction: rtl;
-            text-align: right;
+            background:#f2f2f2;
+            text-align:center;
+            padding-top:50px;
         }
-        .box {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            margin: auto;
-            box-shadow: 0 0 10px #ccc;
-        }
-        h1 {
-            text-align: center;
-            color: #006c66;
-        }
-        label {
-            font-weight: bold;
-            display: block;
-            margin: 10px 0 5px;
+        #loginBox {
+            background:white;
+            width:300px;
+            padding:20px;
+            margin:auto;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,0.2);
         }
         input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
+            width:90%;
+            padding:10px;
+            margin:10px 0;
+            border:1px solid #ccc;
+            border-radius:5px;
         }
         button {
-            width: 100%;
-            padding: 12px;
-            background: #006c66;
-            border: none;
-            color: white;
-            font-size: 18px;
-            border-radius: 6px;
-            cursor: pointer;
+            width:95%;
+            padding:10px;
+            background:#4CAF50;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
         }
-        button:hover {
-            background: #004b48;
-        }
-        .hidden {
-            display: none;
+        #homePage {
+            display:none;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="box" id="loginPage">
-        <h1>تسجيل الدخول</h1>
-
-        <label>اسم المستخدم</label>
-        <input id="username" placeholder="مثال: driver">
-
-        <label>كلمة المرور</label>
-        <input id="password" type="password" placeholder="••••">
-
+    <div id="loginBox">
+        <h2>تسجيل الدخول</h2>
+        <input type="text" id="username" placeholder="اسم المستخدم">
+        <input type="password" id="password" placeholder="كلمة المرور">
         <button onclick="login()">دخول</button>
     </div>
 
-    <div class="box hidden" id="homePage">
+    <div id="homePage">
         <h1 id="welcomeTitle"></h1>
         <p id="roleText"></p>
         <p id="motivationText"></p>
-
         <button onclick="logout()">تسجيل خروج</button>
     </div>
 
-    <script>
-        function login() {
-            const users = {
-                "driver": { pass: "2222", role: "السائق", msg: "ابدأ يومك بنشاط 💚" },
-                "tech": { pass: "3333", role: "الفني", msg: "عملك يغيّر جودة الحالات 🔧" }
-            };
+<script>
 
-            let user = document.getElementById("username").value;
-            let pass = document.getElementById("password").value;
+const users = {
+    "wedad":   { pass:"1234", role:"مديرة المعمل", msg:"أهلاً بعودتك يا قائدة المعمل 💚" },
+    "hanan":   { pass:"5678", role:"فنية", msg:"يوم جديد وإنجاز جديد يا حنان ✨" },
+    "majed":   { pass:"9999", role:"طبيب", msg:"نورت يا دكتور 🌟" }
+};
 
-            if (users[user] && users[user].pass === pass) {
-                document.getElementById("loginPage").classList.add("hidden");
-                document.getElementById("homePage").classList.remove("hidden");
+function login() {
+    let user = document.getElementById("username").value.toLowerCase();
+    let pass = document.getElementById("password").value;
 
-                document.getElementById("welcomeTitle").innerText = `مرحباً ${user.toUpperCase()}`;
-                document.getElementById("roleText").innerText = `دورك: ${users[user].role}`;
-                document.getElementById("motivationText").innerText = users[user].msg;
+    if (users[user] && users[user].pass === pass) {
 
-            } else {
-                alert("اسم المستخدم أو كلمة المرور غير صحيحة");
-            }
-        }
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("homePage").style.display = "block";
 
-        function logout() {
-            document.getElementById("homePage").classList.add("hidden");
-            document.getElementById("loginPage").classList.remove("hidden");
+        document.getElementById("welcomeTitle").innerText = "مرحبا " + user.toUpperCase();
+        document.getElementById("roleText").innerText = "Role: " + users[user].role;
+        document.getElementById("motivationText").innerText = users[user].msg;
 
-            document.getElementById("username").value = "";
-            document.getElementById("password").value = "";
-        }
-    </script>
+    } else {
+        alert("البيانات غير صحيحة");
+    }
+}
+
+function logout() {
+    document.getElementById("homePage").style.display = "none";
+    document.getElementById("loginBox").style.display = "block";
+
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+}
+
+</script>
 
 </body>
 </html>
