@@ -1,89 +1,992 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>DSA Lab System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --bg: #f4f7f9;
+      --card: #ffffff;
+      --primary: #2f9d5b;
+      --primary-soft: #e2f4ea;
+      --text-main: #222831;
+      --text-muted: #6b7280;
+      --danger: #e53935;
+      --border: #dde3ea;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.12);
+      --shadow-light: 0 6px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
     body {
-      font-family: "Tajawal", sans-serif;
-      background: #f5f5f5;
-      text-align: center;
-      padding-top: 100px;
+      margin: 0;
+      background: radial-gradient(circle at top, #e8f5ff 0, #f4f7f9 45%, #f4f7f9 100%);
+      min-height: 100vh;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
+
+    .hidden { display: none; }
+
+    .page-shell {
+      width: 100%;
+      max-width: 960px;
+      background: linear-gradient(145deg, #ffffff 0, #f8fafc 35%, #ffffff 100%);
+      box-shadow: var(--shadow-soft);
+      border-radius: 24px;
+      padding: 32px 24px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .page-shell { padding: 36px 40px 32px; }
+    }
+
+    .page-shell::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: -80px;
+      inset-block-start: -80px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(47, 157, 91, 0.18), transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-shell::after {
+      content: "";
+      position: absolute;
+      inset-inline-end: -120px;
+      inset-block-end: -120px;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(34, 197, 94, 0.12), transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .app-title {
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .app-title span.logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #a7f3d0, #22c55e);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 18px;
+      box-shadow: 0 8px 18px rgba(22, 163, 74, 0.4);
+    }
+
+    .app-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    /* ====== LOGIN ====== */
     .card {
-      background: white;
-      width: 350px;
-      padding: 25px;
-      margin: auto;
-      border-radius: 12px;
-      box-shadow: 0 0 10px #ccc;
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 24px 20px 20px;
+      box-shadow: var(--shadow-light);
+      max-width: 420px;
+      margin-inline: auto;
     }
-    input{
-      width: 90%;
-      padding: 10px;
-      margin: 10px;
-      border-radius: 8px;
-      border: 1px solid #aaa;
-      font-size: 16px;
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 18px;
     }
-    button {
-      width: 95%;
-      padding: 10px;
-      background: #4caf50;
-      color: white;
+
+    .card-header h2 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+    }
+
+    .card-header p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 0.95rem;
+      outline: none;
+      background-color: #f9fafb;
+      transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+    }
+
+    .input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.5);
+      background-color: #ffffff;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 999px;
       border: none;
-      border-radius: 8px;
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.95rem;
       cursor: pointer;
-      margin-top: 10px;
-      font-size: 16px;
+      box-shadow: 0 10px 18px rgba(22, 163, 74, 0.35);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.1s, box-shadow 0.1s, opacity 0.1s;
     }
-    button:hover {
-      background: #43a047;
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(22, 163, 74, 0.45);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 14px rgba(22, 163, 74, 0.3);
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      box-shadow: 0 4px 10px rgba(17, 24, 39, 0.15);
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* ====== HOME ====== */
+    .home-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .welcome-block {
+      max-width: 520px;
+    }
+
+    .welcome-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .welcome-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: #166534;
+      font-size: 0.78rem;
+      margin-top: 10px;
+    }
+
+    .user-chip {
+      padding: 8px 12px;
+      background: #f3f4f6;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #16a34a, #4ade80);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .home-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .tile {
+      background: var(--card);
+      border-radius: var(--radius-md);
+      padding: 16px 14px;
+      box-shadow: var(--shadow-light);
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.1s, box-shadow 0.1s, border-color 0.1s;
+    }
+
+    .tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.14);
+      border-color: #bbf7d0;
+    }
+
+    .tile-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 16px;
+      background: #ecfdf3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .tile-title {
+      font-weight: 700;
+      font-size: 0.98rem;
+    }
+
+    .tile-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ====== RECEIVE CASE PAGE ====== */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title span.badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: #166534;
+      font-size: 0.75rem;
+    }
+
+    .section-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .readonly {
+      background-color: #eef2f7;
+      color: #4b5563;
+    }
+
+    .signature-box {
+      margin-top: 12px;
+      border-radius: var(--radius-md);
+      border: 1px dashed #cbd5e1;
+      padding: 10px;
+      background: #f9fafb;
+    }
+
+    .signature-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    canvas#signaturePad {
+      width: 100%;
+      height: 160px;
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      touch-action: none;
+    }
+
+    .sig-actions {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-mini {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.78rem;
+      cursor: pointer;
+      background: #e5e7eb;
+    }
+
+    .form-actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ====== STATS LOCK & STATS ====== */
+    .lock-card {
+      max-width: 420px;
+      margin-inline: auto;
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 22px 20px 20px;
+      box-shadow: var(--shadow-light);
+      text-align: center;
+    }
+
+    .lock-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      margin-inline: auto 10px;
+      margin-bottom: 12px;
+      background: #fef3c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+
+    .lock-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .lock-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius-md);
+      padding: 12px 12px 10px;
+      box-shadow: var(--shadow-light);
+      border-inline-start: 4px solid #bbf7d0;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #166534;
+      margin-bottom: 4px;
+    }
+
+    .stat-bar {
+      margin-top: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+    }
+
+    .stat-bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #22c55e, #4ade80);
+      width: 65%;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .top-row .btn-secondary {
+      width: auto;
+      padding-inline: 12px;
+      font-size: 0.8rem;
+    }
+
+    /* Small helper text */
+    .tiny-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
     }
   </style>
 </head>
-
 <body>
+  <div class="page-shell">
+    <div class="page-content">
 
-<div class="card">
-  <h2>تسجيل الدخول</h2>
-  <input type="text" id="username" placeholder="اسم المستخدم">
-  <input type="password" id="password" placeholder="كلمة المرور">
-  <button onclick="login()">دخول</button>
-</div>
+      <!-- ======= GLOBAL HEADER (title) ======= -->
+      <div class="app-title">
+        <span class="logo-mark">DS</span>
+        DSA Lab System
+      </div>
+      <div class="app-subtitle">
+        نظام بسيط لمتابعة حالات المعمل والإحصائيات اليومية في عيادات الأسنان.
+      </div>
 
-<script>
+      <!-- ======= LOGIN PAGE ======= -->
+      <section id="loginPage">
+        <div class="card">
+          <div class="card-header">
+            <h2>تسجيل الدخول</h2>
+            <p>أهلاً بفريق المعمل والعيادات 🤍  
+              <br />أدخل اسمك وكلمة المرور المشتركة للبدء.</p>
+          </div>
+          <div class="field">
+            <label for="usernameInput">اسم المستخدم / Name</label>
+            <input id="usernameInput" class="input" type="text" placeholder="مثال: Wedad" />
+          </div>
+          <div class="field">
+            <label for="passwordInput">كلمة المرور / Password</label>
+            <input id="passwordInput" class="input" type="password" placeholder="••••" />
+          </div>
+          <button class="btn" onclick="login()">
+            دخول
+          </button>
+          <div class="hint">
+            كلمة المرور الافتراضية: <strong>1234</strong> – يمكن تغييرها من الكود.
+          </div>
+        </div>
+      </section>
 
-// حساب الإحصائيات
-const adminUser = {
-  username: "wedad",
-  password: "0000"
-};
+      <!-- ======= HOME PAGE ======= -->
+      <section id="homePage" class="hidden">
+        <div class="home-header">
+          <div class="welcome-block">
+            <div class="welcome-title" id="welcomeMain"></div>
+            <div class="welcome-sub" id="welcomeSub"></div>
+            <div class="tag-pill">
+              ❤️ جاهزين نشوف النظام؟ &nbsp;|&nbsp; Ready to make today better?
+            </div>
+          </div>
+          <div>
+            <div class="user-chip">
+              <span class="user-avatar" id="userAvatar">W</span>
+              <div>
+                <div id="userNameLabel">WEDAD</div>
+                <small style="color:var(--text-muted);">فريق المعمل – Lab Team</small>
+              </div>
+            </div>
+          </div>
+        </div>
 
-// الرقم السري العام للكل
-const generalPassword = "1234";
+        <div class="home-grid">
+          <!-- Receive Case -->
+          <article class="tile" onclick="openReceivePage()">
+            <div class="tile-header">
+              <div class="tile-icon">📦</div>
+              <div>
+                <div class="tile-title">استلام حالة / Receive Case</div>
+                <div class="tile-sub">
+                  تسجيل استلام الحالات من المعمل مع كود وتتوقيع رقمي بسيط.
+                </div>
+              </div>
+            </div>
+            <div class="tile-sub">
+              Ready to receive new dental lab cases with a unique code & signature.
+            </div>
+          </article>
 
-function login() {
-  let user = document.getElementById("username").value.trim().toLowerCase();
-  let pass = document.getElementById("password").value.trim();
+          <!-- Statistics -->
+          <article class="tile" onclick="openStatsLock()">
+            <div class="tile-header">
+              <div class="tile-icon">📊</div>
+              <div>
+                <div class="tile-title">الإحصائيات / Statistics</div>
+                <div class="tile-sub">
+                  عرض أعداد الحالات أسبوعيًا، شهريًا وسنويًا – دخول خاص للمسؤولة.
+                </div>
+              </div>
+            </div>
+            <div class="tile-sub">
+              Only the supervisor can unlock this board with a secret code.
+            </div>
+          </article>
 
-  // تسجيل دخول الإحصائيات
-  if (user === adminUser.username && pass === adminUser.password) {
-      alert("✔ تم الدخول: صفحة الإحصائيات");
-      return;
-  }
+          <!-- Daily Motivation -->
+          <article class="tile">
+            <div class="tile-header">
+              <div class="tile-icon">💚</div>
+              <div>
+                <div class="tile-title">نبض اليوم / Daily Boost</div>
+                <div class="tile-sub">
+                  جملة تحفيزية خفيفة تذكّر الفريق أن كل حالة تعني ابتسامة جديدة.
+                </div>
+              </div>
+            </div>
+            <div class="tile-sub" id="motivationDaily">
+              Every clean record is a saved smile – keep going, team!
+            </div>
+          </article>
+        </div>
 
-  // دخول عام
-  if (pass === generalPassword) {
-      alert("✔ دخول ناجح");
-      return;
-  }
+        <div class="top-row" style="margin-top:20px;">
+          <div class="tiny-note">
+            يمكنك دائمًا تسجيل الخروج من هنا والعودة لصفحة الدخول.
+          </div>
+          <button class="btn-secondary" onclick="logout()">تسجيل خروج</button>
+        </div>
+      </section>
 
-  // بيانات خطأ
-  alert("❌ البيانات غير صحيحة");
-}
+      <!-- ======= RECEIVE CASE PAGE ======= -->
+      <section id="receivePage" class="hidden">
+        <div class="section-header">
+          <div class="section-title">
+            📦 استلام حالة من المعمل
+            <span class="badge">Receive case from lab</span>
+          </div>
+          <button class="btn-secondary" onclick="showHome()">العودة للرئيسية</button>
+        </div>
+        <div class="section-sub">
+          يا مرحبا بفريق العمل 🤍  
+          جاهزين نستقبل حالة جديدة؟  
+          <br />Let's record a new case and make it the start of good news 💚
+        </div>
 
-</script>
+        <form id="receiveForm" onsubmit="submitCase(event)">
+          <div class="two-col">
+            <div class="field">
+              <label for="caseCode">كود الحالة (يولّد تلقائيًا)</label>
+              <input id="caseCode" class="input readonly" type="text" readonly />
+            </div>
+            <div class="field">
+              <label for="patientName">اسم المريض / Patient Name</label>
+              <input id="patientName" class="input" type="text" required />
+            </div>
+          </div>
 
+          <div class="two-col">
+            <div class="field">
+              <label for="caseType">نوع الحالة / Case Type</label>
+              <input id="caseType" class="input" type="text" placeholder="مثال: Full denture, Crown…" />
+            </div>
+            <div class="field">
+              <label for="fromClinic">من العيادة / From Clinic</label>
+              <input id="fromClinic" class="input" type="text" placeholder="Clinic number / doctor name" />
+            </div>
+          </div>
+
+          <div class="two-col">
+            <div class="field">
+              <label for="receiveDate">تاريخ الاستلام / Received Date</label>
+              <input id="receiveDate" class="input" type="date" />
+            </div>
+            <div class="field">
+              <label for="notes">ملاحظات إضافية / Notes</label>
+              <input id="notes" class="input" type="text" placeholder="Optional" />
+            </div>
+          </div>
+
+          <div class="signature-box">
+            <div class="signature-header">
+              <span>توقيع المساعدة / العامل عند الاستلام ✍️</span>
+              <span>Helper / Runner Signature</span>
+            </div>
+            <canvas id="signaturePad"></canvas>
+            <div class="sig-actions">
+              <button type="button" class="btn-mini" onclick="clearSignature()">مسح التوقيع</button>
+            </div>
+            <div class="tiny-note">
+              يمكنك التوقيع بالماوس أو اللمس.  
+              You can sign with mouse or touch.
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn" style="width:auto;">
+              حفظ الاستلام ✅
+            </button>
+            <button type="button" class="btn-secondary" style="width:auto;" onclick="resetReceiveForm()">
+              حالة جديدة
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ======= STATS LOCK PAGE ======= -->
+      <section id="statsLockPage" class="hidden">
+        <div class="lock-card">
+          <div class="lock-icon">🔒</div>
+          <div class="lock-title">لوحة الإحصائيات – Statistics Board</div>
+          <p class="lock-sub">
+            هذه الصفحة خاصة بالمسؤولة فقط.  
+            أدخلي الكود السري لعرض إنجازات الفريق.
+          </p>
+          <div class="field">
+            <label for="statsCodeInput">الكود السري للإحصائيات</label>
+            <input id="statsCodeInput" class="input" type="password" placeholder="••••" />
+          </div>
+          <button class="btn" style="margin-top:8px;" onclick="unlockStats()">
+            دخول الإحصائيات
+          </button>
+          <button class="btn-secondary" style="margin-top:8px;" onclick="showHome()">
+            الرجوع للرئيسية
+          </button>
+          <div class="hint">
+            الكود الافتراضي: <strong>2025</strong> – يمكن تغييره من الكود.
+          </div>
+        </div>
+      </section>
+
+      <!-- ======= STATS PAGE ======= -->
+      <section id="statsPage" class="hidden">
+        <div class="section-header">
+          <div class="section-title">
+            📊 إحصائيات المعمل والعيادات
+            <span class="badge">Lab & Clinic stats</span>
+          </div>
+          <button class="btn-secondary" onclick="showHome()">العودة للرئيسية</button>
+        </div>
+        <div class="section-sub">
+          يا مرحبا مشرفة الأرقام 🤍  
+          Ready to see how strong the team is today?  
+          <br />هنا نشوف عدد الحالات… كل رقم يعني إنجاز وابتسامة جديدة 🌟
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">حالات هذا الأسبوع / This week</div>
+            <div class="stat-value" id="statWeek">24</div>
+            <div class="tiny-note">Cases received & recorded.</div>
+            <div class="stat-bar">
+              <div class="stat-bar-fill" style="width:70%;"></div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">حالات هذا الشهر / This month</div>
+            <div class="stat-value" id="statMonth">96</div>
+            <div class="tiny-note">Across all clinic sections.</div>
+            <div class="stat-bar">
+              <div class="stat-bar-fill" style="width:55%;"></div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">حالات هذه السنة / This year</div>
+            <div class="stat-value" id="statYear">642</div>
+            <div class="tiny-note">Total completed lab cases.</div>
+            <div class="stat-bar">
+              <div class="stat-bar-fill" style="width:80%;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // ====== CONFIGURABLE CODES ======
+    const LOGIN_PASSWORD = "1234"; // كلمة المرور العامة
+    const STATS_CODE = "2025";     // الكود السري للإحصائيات
+
+    // ====== HELPERS ======
+    const $ = (id) => document.getElementById(id);
+
+    function showSection(id) {
+      ["loginPage", "homePage", "receivePage", "statsLockPage", "statsPage"].forEach(sec => {
+        $(sec).classList.add("hidden");
+      });
+      $(id).classList.remove("hidden");
+    }
+
+    // ====== LOGIN LOGIC ======
+    function login() {
+      const name = $("usernameInput").value.trim();
+      const pass = $("passwordInput").value.trim();
+
+      if (!name) {
+        alert("فضلاً أدخل اسم المستخدم.");
+        return;
+      }
+      if (pass !== LOGIN_PASSWORD) {
+        alert("كلمة المرور غير صحيحة.");
+        return;
+      }
+
+      // Set user display
+      const upperName = name.toUpperCase();
+      $("userNameLabel").textContent = upperName;
+      $("userAvatar").textContent = upperName.charAt(0);
+
+      setWelcomeMessages();
+      setDailyMotivation();
+      showSection("homePage");
+      $("passwordInput").value = "";
+
+      // Generate initial case code & set default date
+      prepareReceiveForm();
+    }
+
+    function logout() {
+      $("usernameInput").value = "";
+      $("passwordInput").value = "";
+      showSection("loginPage");
+    }
+
+    // ====== WELCOME & MOTIVATION ======
+    function setWelcomeMessages() {
+      const messages = [
+        {
+          main: "يا مرحبا 🤍 جاهزين نشوف النظام؟",
+          sub: "يارب تبشّر خطواتكم اليوم بالخير والإنجاز. Every case you track is a smile you save."
+        },
+        {
+          main: "نورتي النظام يا بطلة المعمل 💚",
+          sub: "اليوم يوم إنجاز… جاهزة؟ Let’s make the workflow smoother than ever."
+        },
+        {
+          main: "Welcome back to DSA Lab System ✨",
+          sub: "Small organized steps create big results for patients and the team."
+        }
+      ];
+      const pick = messages[Math.floor(Math.random() * messages.length)];
+      $("welcomeMain").textContent = pick.main;
+      $("welcomeSub").textContent = pick.sub;
+    }
+
+    function setDailyMotivation() {
+      const quotes = [
+        "كل حالة تضيف رقمًا في الإحصائية، لكنها تصنع فرقًا كبيرًا في حياة مريض 💚",
+        "You don’t just handle cases, you handle people’s confidence in their smiles.",
+        "اليوم نرتب الشغل… وبكرة ترتب لنا الأرقام مستقبل أقوى للعيادة 💪",
+        "Behind every clean record there’s a focused assistant and a calm lab 💚",
+        "إذا ارتبك اليوم… رتّبي الأرقام، الأرقام دائمًا ترجعك للوضوح 🌿"
+      ];
+      $("motivationDaily").textContent =
+        quotes[Math.floor(Math.random() * quotes.length)];
+    }
+
+    // ====== NAVIGATION FROM HOME ======
+    function showHome() {
+      showSection("homePage");
+    }
+
+    function openReceivePage() {
+      prepareReceiveForm();
+      showSection("receivePage");
+    }
+
+    function openStatsLock() {
+      $("statsCodeInput").value = "";
+      showSection("statsLockPage");
+    }
+
+    // ====== RECEIVE CASE FORM ======
+    function generateCaseCode() {
+      const now = new Date();
+      const part =
+        now.getFullYear().toString().slice(-2) +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        String(now.getDate()).padStart(2, "0");
+      const random = Math.floor(Math.random() * 900 + 100); // 3-digit
+      return `DSA-${part}-${random}`;
+    }
+
+    function prepareReceiveForm() {
+      $("caseCode").value = generateCaseCode();
+      const today = new Date().toISOString().slice(0, 10);
+      $("receiveDate").value = today;
+      clearSignature();
+    }
+
+    function resetReceiveForm() {
+      $("patientName").value = "";
+      $("caseType").value = "";
+      $("fromClinic").value = "";
+      $("notes").value = "";
+      prepareReceiveForm();
+    }
+
+    function submitCase(event) {
+      event.preventDefault();
+      // هنا لاحقًا ممكن نضيف حفظ في قاعدة بيانات، الآن فقط رسالة نجاح
+      alert("تم حفظ استلام الحالة بنجاح 💚\nThank you for keeping the workflow clear.");
+      resetReceiveForm();
+      showHome();
+    }
+
+    // ====== SIGNATURE PAD ======
+    const canvas = document.getElementById("signaturePad");
+    const ctx = canvas.getContext("2d");
+    let drawing = false;
+    let lastX = 0, lastY = 0;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      ctx.lineWidth = 2;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#111827";
+    }
+
+    function startDraw(x, y) {
+      drawing = true;
+      [lastX, lastY] = [x, y];
+    }
+
+    function drawLine(x, y) {
+      if (!drawing) return;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      [lastX, lastY] = [x, y];
+    }
+
+    function stopDraw() {
+      drawing = false;
+    }
+
+    function clearSignature() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Mouse events
+    canvas.addEventListener("mousedown", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      startDraw(e.clientX - rect.left, e.clientY - rect.top);
+    });
+    canvas.addEventListener("mousemove", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      drawLine(e.clientX - rect.left, e.clientY - rect.top);
+    });
+    canvas.addEventListener("mouseup", stopDraw);
+    canvas.addEventListener("mouseleave", stopDraw);
+
+    // Touch events
+    canvas.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      startDraw(t.clientX - rect.left, t.clientY - rect.top);
+    }, { passive: false });
+    canvas.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      drawLine(t.clientX - rect.left, t.clientY - rect.top);
+    }, { passive: false });
+    canvas.addEventListener("touchend", stopDraw);
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    // ====== STATS LOCK ======
+    function unlockStats() {
+      const code = $("statsCodeInput").value.trim();
+      if (code !== STATS_CODE) {
+        alert("الكود غير صحيح. تأكدي من الكود الخاص بالإحصائيات.");
+        return;
+      }
+      showSection("statsPage");
+    }
+  </script>
 </body>
 </html>
